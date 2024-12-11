@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import {
   Card,
@@ -12,8 +15,50 @@ import { Button } from "../components/ui/button";
 import Link from "next/link";
 import logopz from "@/public/logo.jpg";
 import googleIcon from "@/public/icons8-google.svg";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignUp() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (password !== confirmPassword) {
+      toast.error("As senhas não coincidem");
+      return;
+    }
+
+    toast.dismiss("");
+
+    const userData = { name, email, password };
+
+    try {
+      const response = await fetch("route", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      if (response.ok) {
+        toast.success("Cadastro realizado com sucesso!");
+        window.location.href = "/sign-in";
+      } else {
+        const data = await response.json();
+        toast.error(data.message || "Error trying to register.");
+      }
+    } catch (error) {
+      toast.error("Error sending data.");
+    }
+  };
   return (
     <div className="flex h-screen w-screen">
       <div className="flex bg-black w-[50%] h-[100%] items-center justify-center">
@@ -32,67 +77,122 @@ export default function SignUp() {
             </div>
 
             <CardContent>
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="name">Nome Completo</Label>
+              <form>
+                
+                {/* Input Name */}
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <div className="flex items-center">
+                      <Label htmlFor="name">Nome Completo</Label>
+                    </div>
+                    <Input
+                      id="name"
+                      type="text"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                    />
                   </div>
-                  <Input id="name" type="name" required />
-                </div>
-                <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="email">Email</Label>
-                  </div>
-                  <Input id="email" type="email" required />
-                </div>
-                <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Senha</Label>
-                  </div>
-                  <Input id="password" type="password" required />
-                </div>
-                <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="confirm-password">Confimar senha</Label>
-                  </div>
-                  <Input
-                    id="confirm-password"
-                    type="confirm-password"
-                    required
-                  />
-                </div>
-                <div className="flexitems-center justify-center">
-                  <div className="flex-col justify-center items-center">
-                    <Button type="submit" className="w-full">
-                      Cadastrar
-                    </Button>
-                    <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
-                      Já possui uma conta?
-                    </p>
-                    <Link href={"/sign-in"}>
-                      <Button variant="outline" className="w-full">
-                        Fazer login
-                      </Button>
-                    </Link>
 
-                    <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
-                      ou
-                    </p>
-                    <Button variant="outline" className="w-full">
-                      <Image
-                        className="w-[10%]"
-                        src={googleIcon}
-                        alt="google icon"
-                      />
-                      Acessar com Google
-                    </Button>
+                  {/* Input Email */}
+                  <div className="grid gap-2">
+                    <div className="flex items-center">
+                      <Label htmlFor="email">Email</Label>
+                    </div>
+                    <Input
+                      id="email"
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Input Password */}
+                  <div className="grid gap-2 relative">
+                    <div className="flex items-center">
+
+                      <Label htmlFor="password">Senha</Label>
+                      {password &&  (
+                        <button
+                          type="button"
+                          className="absolute right-3 top-2/3 transform -translate-y-1/2"
+                         onClick={() => setShowPassword((oldValue) => !oldValue)}
+
+                        ></button>
+                      )}
+                    </div>
+                    <Input
+                      id="password"
+                      type={showPassword ? "text" : "password"}
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                    />
+                  </div>
+
+
+                  {/* Input Confirm Password */}
+                  <div className="grid gap-2 relative">
+                    <div className="flex items-center">
+                      <Label htmlFor="confirm-password">Confirmar Senha</Label>
+                      {confirmPassword && (
+                        <button
+                          type="button"
+                          className="absolute right-3 top-2/3 transform -translate-y-1/2"
+                          onClick={() =>
+                            setShowConfirmPassword(!showConfirmPassword)
+                          }
+                        ></button>
+                      )}
+                    </div>
+                    <Input
+                      id="confirm-password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      required
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="flexitems-center justify-center">
+                    <div className="flex-col justify-center items-center">
+                      <Button
+                        type="submit"
+                        onClick={handleSubmit}
+                        className="w-full"
+                      >
+                        Cadastrar
+                      </Button>
+                      <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
+                        Já possui uma conta?
+                      </p>
+                      <Link href={"/sign-in"}>
+                        <Button variant="outline" className="w-full">
+                          Fazer login
+                        </Button>
+                      </Link>
+
+                      <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
+                        ou
+                      </p>
+                      <Button variant="outline" className="w-full">
+                        <Image
+                          className="w-[10%]"
+                          src={googleIcon}
+                          alt="google icon"
+                        />
+                        Acessar com Google
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              </form>
             </CardContent>
           </Card>
         </div>
       </div>
+      <ToastContainer position="top-right" autoClose={5000} />
     </div>
   );
 }
