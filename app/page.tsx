@@ -17,6 +17,9 @@ import logopz from "@/public/logo.jpg";
 import googleIcon from "@/public/icons8-google.svg";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import hide from "@/public/hide.png"
+import view from "@/public/view.png"
+import { PasswordInput } from "@/components/ui/passInput";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -108,27 +111,28 @@ export default function SignUp() {
                     />
                   </div>
 
+
                   {/* Input Password */}
                   <div className="grid gap-2 relative">
                     <div className="flex items-center">
 
                       <Label htmlFor="password">Senha</Label>
-                      {password &&  (
+                      
                         <button
                           type="button"
                           className="absolute right-3 top-2/3 transform -translate-y-1/2"
                          onClick={() => setShowPassword((oldValue) => !oldValue)}
-
                         ></button>
-                      )}
+                      
                     </div>
-                    <Input
+                    <PasswordInput
                       id="password"
                       type={showPassword ? "text" : "password"}
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                     />
+                    
                   </div>
 
 
@@ -136,17 +140,16 @@ export default function SignUp() {
                   <div className="grid gap-2 relative">
                     <div className="flex items-center">
                       <Label htmlFor="confirm-password">Confirmar Senha</Label>
-                      {confirmPassword && (
-                        <button
+                                      <button
                           type="button"
                           className="absolute right-3 top-2/3 transform -translate-y-1/2"
                           onClick={() =>
                             setShowConfirmPassword(!showConfirmPassword)
                           }
                         ></button>
-                      )}
+                      
                     </div>
-                    <Input
+                    <PasswordInput
                       id="confirm-password"
                       type={showConfirmPassword ? "text" : "password"}
                       required

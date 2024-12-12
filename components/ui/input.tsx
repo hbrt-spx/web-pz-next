@@ -2,6 +2,17 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type: string;
+  disabled?: boolean;
+  placeholder?: string;
+  className?: string;
+}
+
 const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
   ({ className, type, ...props }, ref) => {
     return (
@@ -20,3 +31,5 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
 Input.displayName = "Input"
 
 export { Input }
+
+
