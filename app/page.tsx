@@ -43,7 +43,7 @@ export default function SignUp() {
     const userData = { name, email, password };
 
     try {
-      const response = await fetch("route", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -51,14 +51,18 @@ export default function SignUp() {
         body: JSON.stringify(userData),
       });
 
+      
+
       if (response.ok) {
         toast.success("Cadastro realizado com sucesso!");
         window.location.href = "/sign-in";
       } else {
         const data = await response.json();
-        toast.error(data.message || "Error trying to register.");
+        console.log("front", data.message)
+        toast.error(data.message.join(", ") || "Error trying to register.");
       }
     } catch (error) {
+      console.error("Error", error)
       toast.error("Error sending data.");
     }
   };
@@ -172,7 +176,7 @@ export default function SignUp() {
                       </p>
                       <Link href={"/sign-in"}>
                         <Button variant="outline" className="w-full">
-                          Fazer login
+                          Fazer Login
                         </Button>
                       </Link>
 
