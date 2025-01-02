@@ -17,8 +17,6 @@ import logopz from "@/public/logo.jpg";
 import googleIcon from "@/public/icons8-google.svg";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import hide from "@/public/hide.png"
-import view from "@/public/view.png"
 import { PasswordInput } from "@/components/ui/passInput";
 
 export default function SignUp() {
@@ -68,10 +66,10 @@ export default function SignUp() {
   };
   return (
     <div className="flex h-screen w-screen">
-      <div className="flex bg-black w-[50%] h-[100%] items-center justify-center">
+      <div className="hidden lg:flex h-full bg-black w-[90%] items-center justify-center">
         <Image src={logopz} alt="logo" />
       </div>
-      <div className="inline-flex bg-black w-[50%] h-[100%] items-center justify-center">
+      <div className="inline-flex bg-black justify-center items-center w-full h-full lg:bg-cover lg:bg-center relative">
         <div className=" items-center justify-center">
           <Card className="justify-center items-center mx-auto max-w-sm">
             <div className="flex justify-center items-center">

@@ -13,8 +13,53 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import googleIcon from "@/public/icons8-google.svg";
 import Image from "next/image";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useState } from "react";
 
 export default function SignIn() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    toast.dismiss("");
+
+    const userData = { email, password };
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        }
+      );
+
+      if (response.ok) {
+
+        const data = await response.json();
+        
+        if (data.access_token) {
+          toast.success("Logando...");
+          localStorage.setItem("token", data.token);
+           console.log("Token armazenado:", localStorage.getItem("token"));
+          window.location.href = "/dashboard";
+        } else {
+          toast.error("Erro ao fazer login. Tente novamente.");
+        }
+      } else {
+        const data = await response.json();
+        toast.error(data.message.join(", ") || "Erro ao tentar logar.");
+      }
+    } catch (error) {
+      toast.error("Os campos precisam ser preenchidos corretamente.");
+    }
+  };
   return (
     <div className="flex items-center justify-center w-screen h-screen bg-[url(/logo.jpg)] bg-center  bg-no-repeat">
       <div>
@@ -34,6 +79,8 @@ export default function SignIn() {
                   type="email"
                   placeholder="projectz@mail.com"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="grid gap-2">
@@ -46,28 +93,33 @@ export default function SignIn() {
                     Esqueceu a senha?
                   </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  type="password"
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
-              <Button type="submit" className="w-full">
+              <Button type="submit" onClick={handleSubmit} className="w-full">
                 Acessar
               </Button>
               <Button variant="outline" className="w-full">
-                 <Image
-                          className="w-[10%]"
-                          src={googleIcon}
-                          alt="google icon"
-                        />
+                <Image className="w-[10%]" src={googleIcon} alt="google icon" />
                 Acessar com Google
               </Button>
             </div>
             <div className="mt-4 text-center text-sm">
-             Não possui uma conta?{" "}
+              Não possui uma conta?{" "}
               <Link href="/" className="underline">
                 Cadastre-se
               </Link>
             </div>
           </CardContent>
         </Card>
+      </div>
+      <div>
+        <ToastContainer position="top-right" autoClose={5000} />
       </div>
     </div>
   );
