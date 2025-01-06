@@ -56,7 +56,6 @@ export default function SignUp() {
         window.location.href = "/sign-in";
       } else {
         const data = await response.json();
-        console.log("front", data.message)
         toast.error(data.message.join(", ") || "Error trying to register.");
       }
     } catch (error) {
