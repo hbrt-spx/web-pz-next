@@ -8,16 +8,16 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../components/ui/card";
-import { Label } from "../components/ui/label";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
+} from "./components/ui/card";
+import { Label } from "./components/ui/label";
+import { Input } from "./components/ui/input";
+import { Button } from "./components/ui/button";
 import Link from "next/link";
 import logopz from "@/public/logo.jpg";
 import googleIcon from "@/public/icons8-google.svg";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { PasswordInput } from "@/components/ui/passInput";
+import { PasswordInput } from "@/app/components/ui/passInput";
 
 export default function SignUp() {
   const [name, setName] = useState("");
@@ -171,7 +171,7 @@ export default function SignUp() {
                       <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
                         Já possui uma conta?
                       </p>
-                      <Link href={"/sign-in"}>
+                      <Link href={"/login"}>
                         <Button variant="outline" className="w-full">
                           Fazer Login
                         </Button>

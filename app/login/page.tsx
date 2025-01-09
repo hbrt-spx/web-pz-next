@@ -1,16 +1,17 @@
+"use client"
 import Link from "next/link";
-import "../app/globals.css";
 
-import { Button } from "@/components/ui/button";
+
+import { Button } from "@/app/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+} from "@/app/components/ui/card";
+import { Input } from "@/app/components/ui/input";
+import { Label } from "@/app/components/ui/label";
 import googleIcon from "@/public/icons8-google.svg";
 import Image from "next/image";
 import { toast, ToastContainer } from "react-toastify";
