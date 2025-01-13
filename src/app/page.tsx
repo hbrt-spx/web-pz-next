@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CardRegister from "./components/card-register";
 
+
 export default function SignUp() {
   
   ;
