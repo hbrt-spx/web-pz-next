@@ -2,12 +2,14 @@
 
 import Image from "next/image"
 import logopz from "@/public/logo.jpg"
+import { Button } from "../components/ui/button"
+
 
 export default function Dashboard() {
   return (
-    <div>
+    <div className="flex ">
       <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800">
-  <div className="fixed flex flex-col top-0 left-0 w-64 bg-white h-full border-r">
+  <div className="flex flex-col top-0 left-0 w-64 bg-white h-full border-r">
     <div className="flex items-center justify-center h-14 border-b">
       <Image className="rounded-full w-12 p-2 " src={logopz} alt="logo" />
       <div className="text-black">PROJECT Z0NE</div>
@@ -91,17 +93,25 @@ export default function Dashboard() {
           </a>
         </li>
         <li>
-          <a href="#" className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
+          <a href="/login" className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
             <span className="inline-flex justify-center items-center ml-4">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
             </span>
-            <span className="ml-2 text-sm tracking-wide truncate">Logout</span>
+            <span  className="ml-2 text-sm tracking-wide truncate">Logout</span>
           </a>
         </li>
       </ul>
     </div>
   </div>
 </div>
+    <div className="flex w-[100%] h-14 items-center bg-white border-b">
+      <ul className="flex w-[80%] justify-center items-center">
+        <li>Bem vindo Hebert S. Pereira</li>
+      </ul>
+      <div className="flex w-[20%] items-center justify-center">
+        <Button>Novo Projeto</Button>
+      </div>
+    </div>
     </div>
 
   )

@@ -19,10 +19,13 @@ import * as yup from "yup"
 
 
 const schema = yup.object({
-  name: yup.string().required().matches(/^[a-zA-ZÀ-ÿ]+(\s[a-zA-ZÀ-ÿ]+)+$/),
-  email: yup.string().required().matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/),
-  password: yup.string().required().matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/),
-  confirm: yup.string().required().matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/)
+  name: yup.string().required("Preencha o campo nome.").matches(/^[a-zA-ZÀ-ÿ]+(\s[a-zA-ZÀ-ÿ]+)+$/, {message: "É necessário nome e sobrenome."}),
+
+  email: yup.string().required("Preencha o campo email.").email("Formato de email não reconhecido."),
+
+  password: yup.string().required("Preencha o campo senha.").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/, {message: "A senha precisa conter pelo menos 1 número, 1 letra maiuscula, 1 letra minuscula e um caractere especial e no minimo 8 caracteres."}),
+
+  confirm: yup.string().required("Preencha o campo confirmar senha.").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!]).{8,}$/, {message: "A senha precisa conter pelo menos 1 número, 1 letra maiuscula, 1 letra minuscula e um caractere especial e no minimo 8 caracteres."})
 })
 
 
@@ -30,7 +33,7 @@ export default function CardRegister() {
 
   toast.dismiss("");
 
-  interface IFormInput {
+  interface IFormRegister {
     name: string,
     email: string,
     password: string,
@@ -43,7 +46,7 @@ export default function CardRegister() {
 
   const password = watch("password");
   
-  const onSubmit = async (data: IFormInput) => {
+  const onSubmit = async (data: IFormRegister) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
         method: "POST",
@@ -86,7 +89,7 @@ export default function CardRegister() {
                   <Input {...register("name")}
                     type="text"
                   />
-                  <p>{errors.name?.message}</p>
+                  <p className="text-sm text-red-700">{errors.name?.message}</p>
                 </div>
 
                 {/* Input Email */}
@@ -98,7 +101,7 @@ export default function CardRegister() {
                     type="email"
 
                   />
-                  <p>{errors.email?.message}</p>
+                  <p className="text-sm text-red-700">{errors.email?.message}</p>
                 </div>
 
                 {/* Input Password */}
@@ -112,7 +115,7 @@ export default function CardRegister() {
                     type="password"
 
                   />
-                  <p>{errors.password?.message}</p>
+                  <p className="text-sm text-red-700">{errors.password?.message}</p>
                 </div>
 
                 {/* Input Confirm Password */}
@@ -126,7 +129,7 @@ export default function CardRegister() {
                     id="confirm"
                     type="password"
                   />
-                  <p>{errors.confirm?.message}</p>
+                  <p className="text-sm text-red-700">{errors.confirm?.message}</p>
                 </div>
 
                 <div className="flexitems-center justify-center">

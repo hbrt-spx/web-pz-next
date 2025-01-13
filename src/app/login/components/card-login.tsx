@@ -12,50 +12,49 @@ import { Label } from "@/src/app/components/ui/label";
 import Image from "next/image";
 import Link from "next/link";
 import googleIcon from "@/public/icons8-google.svg";
-
-import { useState } from "react";
+import * as yup from 'yup'
+import {yupResolver} from "@hookform/resolvers/yup"
 import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+
+const schema = yup.object({
+  email: yup.string().required("Preencha o campo email.").email("Formato de email não reconhecido."),
+
+  password: yup.string().required("Preencha o campo password."),
+})
 
 export default function CardLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
 
     toast.dismiss("");
 
-    const userData = { email, password };
+    interface IFormLogin{
+      email: string,
+      password: string
+    }
 
+  const {register, handleSubmit, watch, formState: { errors }} = useForm({
+    resolver: yupResolver(schema)
+  })
+
+  const password = watch("password");
+
+  const onSubmit = async (data: IFormLogin) => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(userData),
-        }
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-
-        if (data.access_token) {
-          toast.success("Logando...");
-          localStorage.setItem("token", data.token);
-          console.log("Token armazenado:", localStorage.getItem("token"));
-          window.location.href = "/dashboard";
-        } else {
-          toast.error("Erro ao fazer login. Tente novamente.");
-        }
-      } else {
-        const data = await response.json();
-        toast.error(data.message.join(", ") || "Erro ao tentar logar.");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if(response.ok){
+        toast.success("Logando...")
+        window.location.href = "/dashboard";
       }
     } catch (error) {
-      toast.error("Os campos precisam ser preenchidos corretamente.");
+      toast.error("Erro ao tentar logar. Tente novamente.");
+      console.error("Erro:", error);
+      console.log("Falha ao tentar logar", error);
     }
   };
   return (
@@ -69,17 +68,17 @@ export default function CardLogin() {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            <form onSubmit={handleSubmit(onSubmit)}>
             <div className="grid gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
-                <Input
+                <Input {...register('email')}
                   id="email"
                   type="email"
                   placeholder="projectz@mail.com"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+            
                 />
+                <p className="text-sm text-red-700">{errors.email?.message}</p>
               </div>
               <div className="grid gap-2">
                 <div className="flex items-center">
@@ -91,15 +90,13 @@ export default function CardLogin() {
                     Esqueceu a senha?
                   </Link>
                 </div>
-                <Input
+                <Input {...register("password")}
                   id="password"
                   type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
                 />
+                <p className="text-sm text-red-700">{errors.password?.message}</p>
               </div>
-              <Button type="submit" onClick={handleSubmit} className="w-full">
+              <Button type="submit" className="w-full">
                 Acessar
               </Button>
               <Button variant="outline" className="w-full">
@@ -113,6 +110,7 @@ export default function CardLogin() {
                 Cadastre-se
               </Link>
             </div>
+            </form>
           </CardContent>
         </Card>
       </div>
