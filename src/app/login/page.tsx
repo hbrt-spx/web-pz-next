@@ -1,7 +1,7 @@
 
 import {ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import CardLogin from "./components/card-login";
+import CardLogin from "../components/molecules/card-login";
 
 
 export default function SignIn() {

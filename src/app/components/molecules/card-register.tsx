@@ -1,18 +1,18 @@
 "use client";
 import Link from "next/link";
-import { Button } from "./ui/button";
+import { Button } from "@/src/app/components/atoms/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./ui/card";
-import { Input } from "./ui/input";
+} from "./card";
+import { Input } from "@/src/app/components/atoms/input";
 import Image from "next/image";
 import googleIcon from "@/public/icons8-google.svg";
 import { useForm } from "react-hook-form"
-import { Label } from "./ui/label";
+import { Label } from "../atoms/label";
 import { toast } from "react-toastify";
 import {yupResolver} from "@hookform/resolvers/yup"
 import * as yup from "yup"

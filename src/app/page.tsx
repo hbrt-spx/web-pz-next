@@ -2,7 +2,7 @@ import Image from "next/image";
 import logopz from "@/public/logo.jpg";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import CardRegister from "./components/card-register";
+import CardRegister from "./components/molecules/card-register";
 
 
 export default function SignUp() {

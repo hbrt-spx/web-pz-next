@@ -1,14 +1,14 @@
 "use client";
-import { Button } from "@/src/app/components/ui/button";
+import { Button } from "@/src/app/components/atoms/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/src/app/components/ui/card";
-import { Input } from "@/src/app/components/ui/input";
-import { Label } from "@/src/app/components/ui/label";
+} from "@/src/app/components/molecules/card";
+import { Input } from "@/src/app/components/atoms/input";
+import { Label } from "@/src/app/components/atoms/label";
 import Image from "next/image";
 import Link from "next/link";
 import googleIcon from "@/public/icons8-google.svg";
