@@ -25,8 +25,6 @@ const schema = yup.object({
 
 export default function CardLogin() {
 
-    toast.dismiss("");
-
     interface IFormLogin{
       email: string,
       password: string

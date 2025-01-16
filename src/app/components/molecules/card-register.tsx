@@ -31,8 +31,6 @@ const schema = yup.object({
 
 export default function CardRegister() {
 
-  toast.dismiss("");
-
   interface IFormRegister {
     name: string,
     email: string,
