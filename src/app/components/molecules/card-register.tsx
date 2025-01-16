@@ -9,13 +9,13 @@ import {
   CardTitle,
 } from "./card";
 import { Input } from "@/src/app/components/atoms/input";
-import Image from "next/image";
-import googleIcon from "@/public/icons8-google.svg";
 import { useForm } from "react-hook-form";
 import { Label } from "../atoms/label";
 import { toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import { LoginBtnGoogle } from "./login-btn-google";
+import { InputPass } from "./input-password";
 
 const schema = yup.object({
   name: yup
@@ -56,7 +56,6 @@ export default function CardRegister() {
   }
 
   const {
-    register,
     handleSubmit,
     watch,
     formState: { errors },
@@ -98,48 +97,42 @@ export default function CardRegister() {
         </div>
 
         <CardContent>
+          {/* FORM */}
           <form onSubmit={handleSubmit(onSubmit)}>
-            {/* Input Name */}
             <Label htmlFor="name">Nome Completo</Label>
             <Input />
             <p className="text-sm text-red-700">{errors.name?.message}</p>
 
-            {/* Input Email */}
             <Label htmlFor="email">Email</Label>
             <Input />
             <p className="text-sm text-red-700">{errors.email?.message}</p>
 
-            {/* Input Password */}
             <Label htmlFor="password">Senha</Label>
-            <Input />
+            <InputPass type="password"/>
             <p className="text-sm text-red-700">{errors.password?.message}</p>
 
-            {/* Input Confirm Password */}
             <Label htmlFor="confirm-password">Confirmar Senha</Label>
-            <Input />
+            <InputPass type="password" />
             <p className="text-sm text-red-700">{errors.confirm?.message}</p>
 
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full mt-2">
               Cadastrar
             </Button>
-            <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
-              {" "}
-              Já possui uma conta?
-            </p>
-            <Link href={"/login"}>
-              <Button variant="outline" className="w-full">
-                Fazer Login
-              </Button>
-            </Link>
-
-            <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
-              ou
-            </p>
-            <Button variant="outline" className="w-full">
-              <Image className="w-[10%]" src={googleIcon} alt="google icon" />
-              Acessar com Google
-            </Button>
           </form>
+          <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
+            {" "}
+            Já possui uma conta?
+          </p>
+          <Link href={"/login"}>
+            <Button variant="outline" className="w-full ">
+              Fazer Login
+            </Button>
+          </Link>
+
+          <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
+            ou
+          </p>
+          <LoginBtnGoogle variant="outline" className="w-full" />
         </CardContent>
       </Card>
     </div>

@@ -12,41 +12,52 @@ import { Label } from "@/src/app/components/atoms/label";
 import Image from "next/image";
 import Link from "next/link";
 import googleIcon from "@/public/icons8-google.svg";
-import * as yup from 'yup'
-import {yupResolver} from "@hookform/resolvers/yup"
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import { LoginBtnGoogle } from "./login-btn-google";
 
 const schema = yup.object({
-  email: yup.string().required("Preencha o campo email.").email("Formato de email não reconhecido."),
+  email: yup
+    .string()
+    .required("Preencha o campo email.")
+    .email("Formato de email não reconhecido."),
 
   password: yup.string().required("Preencha o campo password."),
-})
+});
 
 export default function CardLogin() {
+  interface IFormLogin {
+    email: string;
+    password: string;
+  }
 
-    interface IFormLogin{
-      email: string,
-      password: string
-    }
-
-  const {register, handleSubmit, watch, formState: { errors }} = useForm({
-    resolver: yupResolver(schema)
-  })
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const password = watch("password");
 
   const onSubmit = async (data: IFormLogin) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      if(response.ok){
-        toast.success("Logando...")
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+      if (response.ok) {
+        toast.success("Logando...");
         window.location.href = "/dashboard";
       }
     } catch (error) {
@@ -67,48 +78,53 @@ export default function CardLogin() {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input {...register('email')}
-                  id="email"
-                  type="email"
-                  placeholder="projectz@mail.com"
-            
-                />
-                <p className="text-sm text-red-700">{errors.email?.message}</p>
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Senha</Label>
-                  <Link
-                    href="#"
-                    className="ml-auto inline-block text-sm underline"
-                  >
-                    Esqueceu a senha?
-                  </Link>
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    {...register("email")}
+                    id="email"
+                    type="email"
+                    placeholder="projectz@mail.com"
+                  />
+                  <p className="text-sm text-red-700">
+                    {errors.email?.message}
+                  </p>
                 </div>
-                <Input {...register("password")}
-                  id="password"
-                  type="password"
-                />
-                <p className="text-sm text-red-700">{errors.password?.message}</p>
+                <div className="grid gap-2">
+                  <div className="flex items-center">
+                    <Label htmlFor="password">Senha</Label>
+                    <Link
+                      href="#"
+                      className="ml-auto inline-block text-sm underline"
+                    >
+                      Esqueceu a senha?
+                    </Link>
+                  </div>
+                  <Input
+                    {...register("password")}
+                    id="password"
+                    type="password"
+                  />
+                  <p className="text-sm text-red-700">
+                    {errors.password?.message}
+                  </p>
+                </div>
+                <Button type="submit" className="w-full">
+                  Acessar
+                </Button>
               </div>
-              <Button type="submit" className="w-full">
-                Acessar
-              </Button>
-              <Button variant="outline" className="w-full">
-                <Image className="w-[10%]" src={googleIcon} alt="google icon" />
-                Acessar com Google
-              </Button>
-            </div>
+            </form>
+            <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
+              ou
+            </p>
+            <LoginBtnGoogle variant="outline" className="w-full" />
             <div className="mt-4 text-center text-sm">
               Não possui uma conta?{" "}
               <Link href="/" className="underline">
                 Cadastre-se
               </Link>
             </div>
-            </form>
           </CardContent>
         </Card>
       </div>

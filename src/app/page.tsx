@@ -6,8 +6,6 @@ import CardRegister from "./components/molecules/card-register";
 
 
 export default function SignUp() {
-  
-  ;
   return (
     <div className="flex h-screen w-screen">
       <div className="hidden lg:flex h-full bg-black w-[90%] items-center justify-center">
