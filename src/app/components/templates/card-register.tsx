@@ -14,8 +14,8 @@ import { Label } from "../atoms/label";
 import { toast } from "react-toastify";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { LoginBtnGoogle } from "./login-btn-google";
-import { InputPass } from "./input-password";
+import { LoginBtnGoogle } from "../molecules/login-btn-google";
+import { InputPass } from "../molecules/input-password";
 
 const schema = yup.object({
   name: yup
@@ -97,14 +97,14 @@ export default function CardRegister() {
         </div>
 
         <CardContent>
-          {/* FORM */}
+          {/* FORM REGISTER */}
           <form onSubmit={handleSubmit(onSubmit)}>
             <Label htmlFor="name">Nome Completo</Label>
-            <Input />
+            <Input type="text"/>
             <p className="text-sm text-red-700">{errors.name?.message}</p>
 
             <Label htmlFor="email">Email</Label>
-            <Input />
+            <Input type="email"/>
             <p className="text-sm text-red-700">{errors.email?.message}</p>
 
             <Label htmlFor="password">Senha</Label>

@@ -6,17 +6,17 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/src/app/components/molecules/card";
+} from "@/src/app/components/templates/card";
 import { Input } from "@/src/app/components/atoms/input";
 import { Label } from "@/src/app/components/atoms/label";
-import Image from "next/image";
 import Link from "next/link";
-import googleIcon from "@/public/icons8-google.svg";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
-import { LoginBtnGoogle } from "./login-btn-google";
+import { LoginBtnGoogle } from "../molecules/login-btn-google";
+import { InputPass } from "../molecules/input-password";
+import { LabelForgotPass } from "../molecules/label-forgotpass";
 
 const schema = yup.object({
   email: yup
@@ -77,43 +77,19 @@ export default function CardLogin() {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {/* FORM LOGIN */}
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="grid gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    {...register("email")}
-                    id="email"
-                    type="email"
-                    placeholder="projectz@mail.com"
-                  />
-                  <p className="text-sm text-red-700">
-                    {errors.email?.message}
-                  </p>
-                </div>
-                <div className="grid gap-2">
-                  <div className="flex items-center">
-                    <Label htmlFor="password">Senha</Label>
-                    <Link
-                      href="#"
-                      className="ml-auto inline-block text-sm underline"
-                    >
-                      Esqueceu a senha?
-                    </Link>
-                  </div>
-                  <Input
-                    {...register("password")}
-                    id="password"
-                    type="password"
-                  />
-                  <p className="text-sm text-red-700">
-                    {errors.password?.message}
-                  </p>
-                </div>
-                <Button type="submit" className="w-full">
-                  Acessar
-                </Button>
-              </div>
+              <Label htmlFor="email">Email</Label>
+              <Input type="email" placeholder="projectz@mail.com"/>
+              <p className="text-sm text-red-700">{errors.email?.message}</p>
+    
+              <LabelForgotPass htmlFor="password">Senha</LabelForgotPass>
+              <InputPass type="password"/>
+              <p className="text-sm text-red-700">{errors.password?.message}</p>
+
+              <Button type="submit" className="w-full mt-3">
+                Acessar
+              </Button>
             </form>
             <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
               ou
