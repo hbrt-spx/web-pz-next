@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import CardRegister from "./components/templates/card-register";
 
 
+
 export default function SignUp() {
   return (
     <div className="flex h-screen w-screen">

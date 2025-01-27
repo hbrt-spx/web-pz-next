@@ -1,20 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
+
 import { useForm, FormProvider } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Input } from "@/src/app/components/atoms/input";
 import { Label } from "@/src/app/components/atoms/label";
 import { Button } from "@/src/app/components/atoms/button";
-import { toast } from "react-toastify";
 import { InputPass } from "../molecules/input-password";
+import Cookie from 'js-cookie';
+
 
 const schema = yup.object({
-  name: yup
-    .string()
-    .required("Nome completo é obrigatório.")
-    .matches(/^[a-zA-ZÀ-ÿ]+(\s[a-zA-ZÀ-ÿ]+)+$/, {
-      message: "É necessário nome e sobrenome.",
-    }),
   email: yup.string().email("Email inválido").required("Email é obrigatório."),
   password: yup
     .string()
@@ -24,59 +20,49 @@ const schema = yup.object({
       message:
         "A senha precisa conter pelo menos 1 número, 1 letra maiuscula, 1 letra minuscula e um caractere especial e no minimo 8 caracteres.",
     }),
-  confirm: yup
-    .string()
-    .oneOf([yup.ref("password")], "As senhas não coincidem")
-    .required("Confirmar senha é obrigatório."),
 });
 
-interface IFormRegister {
-  name: string;
+interface IFormLogin {
   email: string;
   password: string;
-  confirm: string;
 }
+function FormLogin() {
 
-function FormRegister(){
-  const methods = useForm<IFormRegister>({
+  const methods = useForm<IFormLogin>({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: IFormRegister) => {
-    const { confirm, ...userData } = data;
+ const onSubmit = async (data: IFormLogin) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify(data),
       });
-      if (response.ok) {
-        toast.success("Cadastro realizado com sucesso");
-        window.location.href = "/login";
+
+      if (!response.ok) {
+        throw new Error('Falha ao autenticar');
+      }
+
+      const userData = await response.json();
+
+      if (userData?.access_token) {
+
+        Cookie.set('token', userData.access_token);
+        window.location.href = "/dashboard";
+      } else {
+        console.error('Token não encontrado na resposta');
       }
     } catch (error) {
-      toast.error("Erro ao fazer cadastro. Tente novamente.");
-      console.error("Erro:", error);
+      console.error('Erro ao fazer login:', error);
     }
   };
-  
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <Label htmlFor="name">Nome Completo</Label>
-        <Input
-          type="text"
-          placeholder="Nome Completo"
-          autoComplete="name"
-          {...methods.register("name")}
-        />
-        <p className="text-sm text-red-700">
-          {methods.formState.errors.name?.message}
-        </p>
-
         <Label htmlFor="email">Email</Label>
         <Input
           type="email"
@@ -98,22 +84,12 @@ function FormRegister(){
           {methods.formState.errors.password?.message}
         </p>
 
-        <Label htmlFor="confirm-password">Confirmar Senha</Label>
-        <InputPass
-          type="password"
-          placeholder="Confirmar Senha"
-          {...methods.register("confirm")}
-        />
-        <p className="text-sm text-red-700">
-          {methods.formState.errors.confirm?.message}
-        </p>
-
         <Button type="submit" className="w-full mt-2">
-          Cadastrar
+          Acessar
         </Button>
       </form>
     </FormProvider>
   );
-};
+}
 
-export default FormRegister;
+export default FormLogin;
