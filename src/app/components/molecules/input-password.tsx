@@ -24,8 +24,6 @@ const InputPass = React.forwardRef<HTMLInputElement, InputProps>(
     const togglePasswordVisibility = () => {
       setShowPassword((prevState) => !prevState);
     };
-
-    // O tipo de input depende do estado showPassword
     const inputType = showPassword ? "text" : "password";
 
     return (
