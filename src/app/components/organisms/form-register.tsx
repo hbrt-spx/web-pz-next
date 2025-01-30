@@ -15,7 +15,7 @@ const schema = yup.object({
     .matches(/^[a-zA-ZÀ-ÿ]+(\s[a-zA-ZÀ-ÿ]+)+$/, {
       message: "É necessário nome e sobrenome.",
     }),
-  email: yup.string().email("Email inválido").required("Email é obrigatório."),
+  email: yup.string().email("Email inválido").required("E-mail é obrigatório."),
   password: yup
     .string()
     .min(6, "Senha deve ter no mínimo 8 caracteres")
@@ -37,7 +37,7 @@ interface IFormRegister {
   confirm: string;
 }
 
-function FormRegister(){
+function FormRegister() {
   const methods = useForm<IFormRegister>({
     resolver: yupResolver(schema),
   });
@@ -61,59 +61,40 @@ function FormRegister(){
       console.error("Erro:", error);
     }
   };
-  
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <Label htmlFor="name">Nome Completo</Label>
         <Input
+          name="name"
+          label=""
           type="text"
-          placeholder="Nome Completo"
-          autoComplete="name"
-          {...methods.register("name")}
+          placeholder='Nome completo'
         />
-        <p className="text-sm text-red-700">
-          {methods.formState.errors.name?.message}
-        </p>
-
-        <Label htmlFor="email">Email</Label>
         <Input
+          name="email"
+          label=""
           type="email"
-          placeholder="mail@mail.com"
-          autoComplete="email"
-          {...methods.register("email")}
+          placeholder="E-mail"
         />
-        <p className="text-sm text-red-700">
-          {methods.formState.errors.email?.message}
-        </p>
-
-        <Label htmlFor="password">Senha</Label>
         <InputPass
+          name="password"
+          label=""
           type="password"
-          placeholder="Senha"
-          {...methods.register("password")}
+          placeholder="Digite sua senha"
         />
-        <p className="text-sm text-red-700">
-          {methods.formState.errors.password?.message}
-        </p>
-
-        <Label htmlFor="confirm-password">Confirmar Senha</Label>
         <InputPass
+          name="confirm"
+          label=""
           type="password"
-          placeholder="Confirmar Senha"
-          {...methods.register("confirm")}
+          placeholder="Repita a sua senha"
         />
-        <p className="text-sm text-red-700">
-          {methods.formState.errors.confirm?.message}
-        </p>
-
         <Button type="submit" className="w-full mt-2">
           Cadastrar
         </Button>
       </form>
     </FormProvider>
   );
-};
+}
 
 export default FormRegister;

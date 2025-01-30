@@ -18,7 +18,7 @@ export default function CardLogin() {
   return (
     <div className="flex items-center justify-center w-screen h-screen bg-[url(/logo.jpg)] bg-center  bg-no-repeat">
       <div>
-        <Card className="mx-auto max-w-sm bg-white/90 backdrop-blur-sm">
+        <Card className="mx-auto max-w-sm bg-white/95 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="text-2xl">Login</CardTitle>
             <CardDescription>
