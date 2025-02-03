@@ -44,14 +44,8 @@ const InputPass = React.forwardRef<HTMLInputElement, InputProps>(
                 )}
                 ref={ref}
                 {...props}
-              />
-              {errors[name] && (
-                <span className="text-red-500 text-sm">
-                  {errors[name]?.message as string}
-                </span>
-              )}
-
-              <div className="flex items-center justify-end mt-2">
+              /> 
+              <div className="flex justify-end">
                 <input
                   type="checkbox"
                   id="show-password"
@@ -63,6 +57,11 @@ const InputPass = React.forwardRef<HTMLInputElement, InputProps>(
                   Mostrar senha
                 </label>
               </div>
+              {errors[name] && (
+                <span className="text-red-500 text-sm">
+                  {errors[name]?.message as string}
+                </span>
+              )}
             </>
           )}
         />

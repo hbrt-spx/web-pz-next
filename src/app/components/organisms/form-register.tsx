@@ -27,7 +27,7 @@ const schema = yup.object({
   confirm: yup
     .string()
     .oneOf([yup.ref("password")], "As senhas não coincidem")
-    .required("Confirmar senha é obrigatório."),
+    .required("Campo de preenchimento obrigatório."),
 });
 
 interface IFormRegister {
@@ -67,25 +67,21 @@ function FormRegister() {
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <Input
           name="name"
-          label=""
           type="text"
           placeholder='Nome completo'
         />
         <Input
           name="email"
-          label=""
           type="email"
           placeholder="E-mail"
         />
         <InputPass
           name="password"
-          label=""
           type="password"
           placeholder="Digite sua senha"
         />
         <InputPass
           name="confirm"
-          label=""
           type="password"
           placeholder="Repita a sua senha"
         />

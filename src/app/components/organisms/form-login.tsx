@@ -8,6 +8,7 @@ import { Label } from "@/src/app/components/atoms/label";
 import { Button } from "@/src/app/components/atoms/button";
 import { InputPass } from "../molecules/input-password";
 import Cookie from 'js-cookie';
+import { LabelForgotPass } from "../molecules/label-forgotpass";
 
 
 const schema = yup.object({
@@ -64,7 +65,9 @@ function FormLogin() {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <Input name="email" type="email" placeholder="E-mail"/>
-        <InputPass name="password" type="password" placeholder="Senha" />
+        <InputPass name="password" type="password" placeholder="Senha"
+         />
+        <LabelForgotPass />
         <Button type="submit" className="w-full mt-2">
           Acessar
         </Button>
