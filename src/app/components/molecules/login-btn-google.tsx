@@ -50,8 +50,8 @@ const LoginBtnGoogle = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        <Image className="w-[10%]" src={googleIcon} alt="google icon" />
-        <p>Acessar com Google</p>
+        <Image className="w-[11%]" src={googleIcon} alt="google icon" />
+        <p>Google</p>
       </Comp>
     );
   }

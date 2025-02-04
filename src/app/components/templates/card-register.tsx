@@ -30,16 +30,19 @@ export default function CardRegister() {
             {" "}
             Já possui uma conta?
           </p>
-          <Link href={"/login"}>
-            <Button variant="outline" className="w-full ">
+          <div className="flex w-full">
+            <Link href={"/login"}>
+            <Button variant="outline" className="w-[150px] font-bold">
               Fazer Login
             </Button>
           </Link>
 
-          <p className="inline-flex items-center justify-center gap-2 h-10 px-4 py-1 w-full">
+          <p className="inline-flex items-center justify-center gap-5 h-10 px-4 py-1 w-[10%]">
             ou
           </p>
-          <LoginBtnGoogle variant="outline" className="w-full" />
+          <LoginBtnGoogle variant="outline" className="w-[150px] font-bold" />
+          </div>
+          
         </CardContent>
       </Card>
     </div>

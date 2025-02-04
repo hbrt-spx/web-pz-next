@@ -85,7 +85,7 @@ function FormRegister() {
           type="password"
           placeholder="Repita a sua senha"
         />
-        <Button type="submit" className="w-full mt-2">
+        <Button type="submit" className="w-full mt-2 font-bold">
           Cadastrar
         </Button>
       </form>
