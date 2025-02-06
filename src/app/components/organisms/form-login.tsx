@@ -9,6 +9,7 @@ import { Button } from "@/src/app/components/atoms/button";
 import { InputPass } from "../molecules/input-password";
 import Cookie from 'js-cookie';
 import { LabelForgotPass } from "../molecules/label-forgotpass";
+import { toast } from "react-toastify";
 
 
 const schema = yup.object({
@@ -44,7 +45,13 @@ function FormLogin() {
       });
 
       if (!response.ok) {
-        throw new Error('Falha ao autenticar');
+        const errorData = await response.json();
+        if (errorData.message) {
+          toast.error(errorData.message)
+      } else {
+          toast.error("Erro ao autenticar. Tente novamente.");
+        }
+        return;
       }
 
       const userData = await response.json();

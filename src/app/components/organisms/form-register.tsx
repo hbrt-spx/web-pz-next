@@ -55,6 +55,13 @@ function FormRegister() {
       if (response.ok) {
         toast.success("Cadastro realizado com sucesso");
         window.location.href = "/login";
+      } else {
+        const errorData = await response.json();
+        if (errorData.message === "Este e-mail já está registrado.") {
+          toast.error("Este e-mail já está registrado.");
+        } else {
+          toast.error("Erro ao fazer cadastro. Tente novamente.");
+        }
       }
     } catch (error) {
       toast.error("Erro ao fazer cadastro. Tente novamente.");
