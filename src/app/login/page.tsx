@@ -5,6 +5,7 @@ import Cookie from 'js-cookie';
 import CardLogin from "../components/templates/card-login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Progress } from "../components/atoms/progress";
 
 export default function SignIn() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function SignIn() {
   }, [router]);
 
   if (loading) {
-    return <div>Verificando token...</div>;
+    return <Progress/>;
   }
 
   return (
