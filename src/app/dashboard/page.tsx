@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import Cookie from 'js-cookie';
 import { useUserStore } from '@/src/app/stores/userStore';
+import { useProjectStore } from '@/src/app/stores/projectStore';
 import { Button } from '@/src/app/components/atoms/button';
 import { useRouter } from 'next/navigation';
 import { Progress } from '../components/atoms/progress';
@@ -93,43 +94,10 @@ export default function Dashboard() {
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [projectDetails, setProjectDetails] = useState<any>(null);
   const token = Cookie.get('token');
   const methods = useForm<IFormProject>();
+  const { projects, addProject, fetchProjects } = useProjectStore();
 
-  
-  const fetchProjectDetails = async (projectId: string) => {
-    const token = Cookie.get('token');
-    if (!token) {
-      toast.error('Token não encontrado');
-      return;
-    }
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${projectId}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        toast.error(errorData.message || 'Erro ao buscar o projeto');
-        return;
-      }
-
-      const projectData = await response.json();
-      setProjectDetails(projectData); 
-    } catch (error) {
-      console.error('Erro ao buscar detalhes do projeto:', error);
-      toast.error('Erro ao buscar detalhes do projeto');
-    }
-  };
-
- 
   const onSubmit = async (data: IFormProject) => {
     try {
       const token = Cookie.get('token');
@@ -138,19 +106,16 @@ export default function Dashboard() {
         return;
       }
 
-      
       const decodedToken = JSON.parse(atob(token.split('.')[1]));
       const userId = decodedToken.sub;
 
-     
       const projectData = {
         name: data.name,
         description: data.description,
-        criadorId: userId, 
-        adminId: userId,   
+        criadorId: userId,
+        adminId: userId,
       };
 
-      
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
         method: 'POST',
         headers: {
@@ -160,7 +125,6 @@ export default function Dashboard() {
         body: JSON.stringify(projectData),
       });
 
-      
       if (!response.ok) {
         const errorData = await response.json();
         if (errorData.message) {
@@ -174,8 +138,7 @@ export default function Dashboard() {
       const responseData = await response.json();
       if (responseData) {
         toast.success('Projeto criado com sucesso!');
-        const projectId = responseData.id; 
-        fetchProjectDetails(projectId); 
+        addProject(responseData);
       }
     } catch (error) {
       console.error('Erro ao criar o projeto:', error);
@@ -183,7 +146,6 @@ export default function Dashboard() {
     }
   };
 
- 
   useEffect(() => {
     if (!token) {
       router.push('/login');
@@ -212,80 +174,72 @@ export default function Dashboard() {
     };
 
     validateToken();
-  }, [router, token]);
+    fetchProjects();
+  }, [router, token, fetchProjects]);
 
   if (isLoading) {
     return <Progress />;
   }
 
   return (
-  <div className="flex relative">
-  
-    <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800">
-      <div className="flex flex-col top-0 left-0 w-64 bg-white h-full border-r">
-        <div className="flex items-center justify-center h-14 border-b">
-          <div className="text-black">PROJECT Z0NE</div>
+    <div className="flex flex-col min-h-screen">
+      {/* Menu Lateral */}
+      <div className="flex flex-row">
+        <div className="w-64 bg-white border-r">
+          <div className="flex items-center justify-center h-14 border-b">
+            <div className="text-black">PROJECT Z0NE</div>
+          </div>
+          <div className='flex flex-col py-4 space-y-1'>
+            <li>aaaaaaaaaaaaaaa</li>
+            <li>bbbbbbbbbbbbbbbb</li>
+            <li>ccccccccccccccccc</li>
+          </div>
         </div>
-        <div className='flex'>
-          <div className="flex overflow-y-auto overflow-x-hidden flex-grow">
-            <ul className="flex flex-col py-4 space-y-1">
-              <li>aaaaaaaaaaaaaaa</li>
-              <li>bbbbbbbbbbbbbbbb</li>
-              <li>ccccccccccccccccc</li>
-            </ul>
+
+        {/* Conteúdo Principal */}
+        <div className="flex flex-col flex-grow">
+          {/* Menu Superior */}
+          <div className="flex w-full h-14 items-center bg-white border-b">
+            <div className="flex w-[80%] justify-center items-center">
+              <UserProfile />
+            </div>
+            <div className="flex w-[20%] items-center justify-center">
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button>+ Novo Projeto</Button>
+                </SheetTrigger>
+              </Sheet>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap justify-start gap-4 p-6 mt-4">
+            {projects.length > 0 ? (
+              projects.map((project) => (
+                <div key={project.id} className="w-[300px] bg-gray-100 rounded-lg p-4 shadow-md mb-4">
+                  <h2 className="text-xl font-bold">{project.name}</h2>
+                  <p>{project.description}</p>
+                  <Sheet>
+                    <SheetTrigger asChild>
+                      <Button variant="outline" className="mt-2">Ver Detalhes</Button>
+                    </SheetTrigger>
+                    <SheetContent>
+                      <SheetHeader>
+                        <SheetTitle>{project.name}</SheetTitle>
+                        <SheetDescription>{project.description}</SheetDescription>
+                      </SheetHeader>
+                      <SheetFooter>
+                        {/*Depois colocar informações dos usuarios, botões e etc */}
+                      </SheetFooter>
+                    </SheetContent>
+                  </Sheet>
+                </div>
+              ))
+            ) : (
+              <p>Nenhum projeto foi criado ainda.</p>
+            )}
           </div>
         </div>
       </div>
     </div>
-
-    <div className="flex w-[100%] h-14 items-center bg-white border-b clear-both">
-      <div className="flex w-[80%] justify-center items-center">
-        <UserProfile />
-      </div>
-      <div className="flex w-[20%] items-center justify-center">
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button onClick={() => setIsSheetOpen(true)}>Novo Projeto</Button>
-          </SheetTrigger>
-
-          {isSheetOpen && (
-            <SheetContent side="right">
-              <SheetHeader>
-                <SheetTitle>Criar Novo Projeto</SheetTitle>
-                <SheetDescription>Preencha as informações abaixo</SheetDescription>
-              </SheetHeader>
-              <FormProvider {...methods}>
-                <form onSubmit={methods.handleSubmit(onSubmit)}>
-                  <Input name="name" type="text" placeholder="Nome do Projeto" />
-                  <Input name="description" type="text" placeholder="Descrição do Projeto" />
-                  <Button type="submit" className="w-full mt-2">
-                    Criar Projeto
-                  </Button>
-                </form>
-              </FormProvider>
-              <SheetFooter>
-             
-              </SheetFooter>
-            </SheetContent>
-          )}
-        </Sheet>
-      </div>
-    </div>
-
-   
-    <div className="absolute top-24 left-1/4 transform -translate-x-1/2 -translate-y-1/2 w-96 p-6 bg-white shadow-lg rounded-lg z-50">
-      <div className="text-center">
-         {projectDetails ? (
-          <div>
-            <h2>{projectDetails.name}</h2>           
-          </div>
-        ) : (
-          <p>Nenhum projeto foi criado ainda.</p>
-        )}
-
-      </div>
-    </div>
-  </div>
-);
-
+  );
 }
