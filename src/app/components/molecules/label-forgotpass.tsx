@@ -4,7 +4,7 @@ import * as React from "react"
 import * as LabelPrimitive from "@radix-ui/react-label"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
-import Link from "next/link"  // Se estiver usando Next.js, ou você pode importar de outro lugar
+import Link from "next/link"
 
 const labelVariants = cva(
   "text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -14,8 +14,8 @@ const LabelForgotPass = React.forwardRef<
   React.ElementRef<typeof LabelPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> & 
     VariantProps<typeof labelVariants> & {
-      showRecoveryLink?: boolean;  // Para mostrar o link de recuperação
-      onRecoveryLinkClick?: () => void;  // Função de click do link
+      showRecoveryLink?: boolean;
+      onRecoveryLinkClick?: () => void;
     }
 >(({ className, showRecoveryLink, onRecoveryLinkClick, children, ...props }, ref) => (
   <div className="flex mt-4 items-center">

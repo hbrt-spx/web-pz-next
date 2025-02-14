@@ -1,4 +1,3 @@
-// src/app/stores/projectStore.ts
 import {create} from 'zustand';
 import Cookie from 'js-cookie';
 
@@ -39,7 +38,7 @@ export const useProjectStore = create<ProjectStore>((set) => ({
         throw new Error('Erro ao buscar projetos');
       }
 
-      const data: Project[] = await response.json(); // Garantir que o retorno seja do tipo Project[]
+      const data: Project[] = await response.json();
       set({ projects: data });
     } catch (error) {
       console.error('Erro ao buscar projetos:', error);
