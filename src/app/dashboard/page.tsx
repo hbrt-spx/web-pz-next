@@ -117,7 +117,7 @@ export default function Dashboard() {
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [taskFormVisible, setTaskFormVisible] = useState(false); 
+  const [taskFormVisible, setTaskFormVisible] = useState(false);
   const token = Cookie.get("token");
   const methods = useForm<IFormProject>();
   const taskMethods = useForm<ITaskForm>();
@@ -179,6 +179,11 @@ export default function Dashboard() {
     toast.success("Tarefa adicionada com sucesso!");
   };
 
+  const handleLogout = () => {
+    Cookie.remove("token");
+    router.push("/login");
+  };
+
   useEffect(() => {
     if (!token) {
       router.push("/login");
@@ -219,22 +224,29 @@ export default function Dashboard() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Menu Lateral */}
       <div className="flex flex-row">
         <div className="w-64 bg-white border-r">
           <div className="flex items-center justify-center h-14 border-b">
             <div className="text-black">PROJECT Z0NE</div>
           </div>
-          <div className="flex flex-col py-4 space-y-1">
+          <div className="flex flex-col py-4 space-y-1 mt-auto">
             <li>Projects</li>
             <li>Settings</li>
             <li>Profile</li>
+
+            <li>
+              <Button
+                onClick={handleLogout}
+                className="mt-auto bg-red-500 text-white"
+              >
+                Logoff
+              </Button>
+            </li>
           </div>
         </div>
 
-        {/* Conteúdo Principal */}
-        <div className="flex flex-col flex-grow">
-          {/* Menu Superior */}
+       
+        <div className="flex flex-col flex-grow">         
           <div className="flex w-full h-14 items-center bg-white border-b">
             <div className="flex w-[80%] justify-center items-center">
               <UserProfile />
@@ -266,7 +278,7 @@ export default function Dashboard() {
                     </FormProvider>
                   </SheetHeader>
                   <SheetFooter>
-                    {/*Depois colocar informações dos usuarios, botões e etc */}
+                  
                   </SheetFooter>
                 </SheetContent>
               </Sheet>
@@ -295,12 +307,11 @@ export default function Dashboard() {
                           {project.description}
                         </SheetDescription>
                         <Button
-                          onClick={() => setTaskFormVisible(!taskFormVisible)} 
+                          onClick={() => setTaskFormVisible(!taskFormVisible)}
                         >
                           + Adicionar Tarefa
                         </Button>
 
-                        
                         {taskFormVisible && (
                           <FormProvider {...taskMethods}>
                             <form
@@ -312,7 +323,7 @@ export default function Dashboard() {
                                 placeholder="Titulo"
                               />
                               <textarea
-                                {...taskMethods.register("taskDescription")} 
+                                {...taskMethods.register("taskDescription")}
                                 placeholder="Descrição da Tarefa"
                                 rows={4}
                                 className="w-full p-2 mt-2 border border-gray-300 rounded-md resize-y overflow-auto"
@@ -329,7 +340,7 @@ export default function Dashboard() {
                         )}
                       </SheetHeader>
                       <SheetFooter>
-                        {/*Mais informações podem ser inseridas aqui */}
+                      
                       </SheetFooter>
                     </SheetContent>
                   </Sheet>

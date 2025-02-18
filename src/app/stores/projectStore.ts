@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import Cookie from 'js-cookie';
+import Cookie from "js-cookie";
+import { create } from "zustand";
 
 interface Project {
   id: string;
@@ -18,54 +18,45 @@ interface ProjectStore {
 
 export const useProjectStore = create<ProjectStore>((set) => ({
   projects: [],
-  addProject: (project: Project) => 
+  addProject: (project: Project) =>
     set((state: ProjectStore) => ({ projects: [...state.projects, project] })),
   setProjects: (projects: Project[]) => set({ projects }),
-  
+
   fetchProjects: async () => {
-  const token = Cookie.get('token');
-  if (!token) {
-    console.error('Token não encontrado');
-    return;
-  }
-
-  const decodedToken = JSON.parse(atob(token.split(".")[1]));
-  const userId = decodedToken.sub;
-
-  console.log('Token decodificado:', decodedToken);
-  console.log('User ID extraído do token:', userId);
-
-  try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/user-projects`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,  // Passando o token no cabeçalho
-      },
-    });
-
-    // Verifique o status da resposta
-    if (!response.ok) {
-      console.error('Erro na requisição:', response.status, response.statusText);
-      throw new Error('Erro ao buscar projetos');
+    const token = Cookie.get("token");
+    if (!token) {
+      console.error("Token não encontrado");
+      return;
     }
+    const decodedToken = JSON.parse(atob(token.split(".")[1]));
+    const userId = decodedToken.sub;
 
-    // Verifique o corpo da resposta antes de tentar convertê-lo para JSON
-    const textResponse = await response.text();  // Obtém a resposta como texto
-    console.log('Texto da resposta:', textResponse);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/projects/user-projects/${userId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    // Se o texto não for vazio ou indefinido, converta para JSON
-    if (textResponse) {
-      const data: Project[] = JSON.parse(textResponse);  // Converter manualmente
-      set({ projects: data });
-      console.log('Projetos recebidos:', data);
-    } else {
-      console.error('Resposta vazia ou inválida');
+      if (!response.ok) {
+        throw new Error(`Erro ao buscar projetos: ${response.statusText}`);
+      }
+
+      const data: Project[] = await response.json();
+      
+      if (data && data.length > 0) {
+        set({ projects: data });
+        console.log("Projetos recebidos:", data);
+      } else {
+        console.error("Nenhum projeto encontrado ou resposta vazia");
+      }
+    } catch (error) {
+      console.error("Erro ao buscar projetos:", error);
     }
-
-  } catch (error) {
-    console.error('Erro ao buscar projetos:', error);
-  }
-},
-
+  },
 }));
