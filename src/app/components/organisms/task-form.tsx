@@ -1,89 +1,71 @@
 import { useFormContext, useFieldArray } from "react-hook-form";
+import { Button } from "../atoms/button"; // Botão personalizado, pode ser alterado conforme necessário
 
 const TaskForm = () => {
-  const { control, handleSubmit } = useFormContext(); 
+  const { control, handleSubmit } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "tasks", 
+    name: "tasks",
   });
 
   const onSubmit = (data: any) => {
-    console.log(data); // fetch aq
+    console.log(data); // Aqui você pode enviar os dados
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {fields.map((item, index) => (
-        <div key={item.id} className="space-y-2 border-b pb-4">
-          <div>
-            <label htmlFor={`tasks[${index}].name`} className="block">
-              Nome da Tarefa
-            </label>
-            <input
-              {...control.register(`tasks[${index}].name`)}
-              type="text"
-              placeholder="Nome da Tarefa"
-              className="w-full p-2 border rounded"
-            />
+      <div className="flex flex-col w-full gap-4">
+        {/* Mapear as tarefas */}
+        {fields.map((item, index) => (
+          <div key={item.id} className="flex gap-4 w-full border-b pb-4">
+            {/* Div contendo os campos da tarefa */}
+            <div className="w-full flex flex-col gap-2">
+              <div>
+                <input
+                  {...control.register(`tasks[${index}].name`)}
+                  type="text"
+                  placeholder="Nome da Tarefa"
+                  className="w-full p-2 border rounded"
+                />
+              </div>
+
+              <div>
+                <textarea
+                  {...control.register(`tasks[${index}].description`)}
+                  placeholder="Descrição da Tarefa"
+                  className="w-full p-2 border rounded"
+                  rows={3}
+                />
+              </div>
+            </div>
+
+            {/* Botões de adicionar e remover */}
+            <div className="flex flex-col justify-center items-center gap-2">
+              <Button
+                type="button"
+                onClick={() => append({ name: "", description: "", assignedTo: "", images: [] })}
+                className="w-full text-white py-2 gap-1 rounded-sm"
+              >
+                +
+              </Button>
+              <Button
+                type="button"
+                onClick={() => remove(index)}
+                className="w-full text-white py-2 gap-1 rounded-sm"
+                disabled={fields.length === 1} // Desabilitar o botão de remoção quando houver apenas uma tarefa
+              >
+                -
+              </Button>
+            </div>
           </div>
-          
-          <div>
-            <label htmlFor={`tasks[${index}].description`} className="block">
-              Descrição da Tarefa
-            </label>
-            <textarea
-              {...control.register(`tasks[${index}].description`)}
-              placeholder="Descrição da Tarefa"
-              className="w-full p-2 border rounded"
-              rows={3}
-            />
-          </div>
+        ))}
 
-          <div>
-            <label htmlFor={`tasks[${index}].assignedTo`} className="block">
-              Quem irá fazer
-            </label>
-            <input
-              {...control.register(`tasks[${index}].assignedTo`)}
-              type="text"
-              placeholder="Nome do responsável"
-              className="w-full p-2 border rounded"
-            />
-          </div>
-
-          <div>
-            <label htmlFor={`tasks[${index}].images`} className="block">
-              Adicionar Imagens
-            </label>
-            <input
-              {...control.register(`tasks[${index}].images`)}
-              type="file"
-              className="w-full p-2 border rounded"
-              multiple
-            />
-          </div>
-
-          <button
-            type="button"
-            className="text-red-500"
-            onClick={() => remove(index)}
-          >
-            Remover Tarefa
-          </button>
-        </div>
-      ))}
-
-      <button
-        type="button"
-        onClick={() => append({ name: "", description: "", assignedTo: "", images: [] })}
-        className="w-full bg-blue-500 text-white py-2 rounded"
-      >
-        Adicionar Nova Tarefa
-      </button>
-
-      <button type="submit" className="w-full mt-4 bg-green-500 text-white py-2 rounded">
-        Salvar Tarefas
-      </button>
+        <Button type="submit" className="w-full mt-4 bg-green-500 text-white py-2 rounded">
+          Salvar Tarefas
+        </Button>
+      </div>
     </form>
   );
 };
+
+export default TaskForm;

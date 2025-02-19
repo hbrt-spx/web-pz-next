@@ -18,6 +18,7 @@ import {
 import { FormProvider, useForm } from "react-hook-form";
 import { Input } from "../components/atoms/input";
 import { toast } from "react-toastify";
+import TaskForm from "../components/organisms/task-form";
 
 const UserProfile = () => {
   const { setUser } = useUserStore();
@@ -117,7 +118,6 @@ export default function Dashboard() {
 
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [taskFormVisible, setTaskFormVisible] = useState(false);
   const token = Cookie.get("token");
   const methods = useForm<IFormProject>();
   const taskMethods = useForm<ITaskForm>();
@@ -234,15 +234,15 @@ export default function Dashboard() {
             <li>Settings</li>
             <li>Profile</li>
 
-            <li>
+            
+           
+          </div>
               <Button
                 onClick={handleLogout}
-                className="mt-auto bg-red-500 text-white"
+                className=" w-full mt-auto bg-red-500 text-white"
               >
                 Logoff
               </Button>
-            </li>
-          </div>
         </div>
 
        
@@ -306,38 +306,16 @@ export default function Dashboard() {
                         <SheetDescription>
                           {project.description}
                         </SheetDescription>
-                        <Button
-                          onClick={() => setTaskFormVisible(!taskFormVisible)}
-                        >
-                          + Adicionar Tarefa
-                        </Button>
 
-                        {taskFormVisible && (
+                       
                           <FormProvider {...taskMethods}>
                             <form
                               onSubmit={taskMethods.handleSubmit(onSubmitTask)}
                             >
-                              <Input
-                                name="taskName"
-                                type="text"
-                                placeholder="Titulo"
-                              />
-                              <textarea
-                                {...taskMethods.register("taskDescription")}
-                                placeholder="Descrição da Tarefa"
-                                rows={4}
-                                className="w-full p-2 mt-2 border border-gray-300 rounded-md resize-y overflow-auto"
-                              />
-                              <Input
-                                name="assignee"
-                                type="text"
-                                placeholder="Quem fará a tarefa?"
-                              />
-                              <Button name="images">Anexar</Button>
-                              <Button type="submit">Salvar</Button>
+                              <TaskForm/>
                             </form>
                           </FormProvider>
-                        )}
+                  
                       </SheetHeader>
                       <SheetFooter>
                       
