@@ -18,7 +18,9 @@ import {
 import { FormProvider, useForm } from "react-hook-form";
 import { Input } from "../components/atoms/input";
 import { toast } from "react-toastify";
-import TaskForm from "../components/organisms/task-form";
+import FormTask from "../components/organisms/form-task";
+import FormBase from "../components/organisms/form-base";
+
 
 const UserProfile = () => {
   const { setUser } = useUserStore();
@@ -222,6 +224,10 @@ export default function Dashboard() {
     return <Progress />;
   }
 
+  const handleSubmit = (data: any) => {
+    console.log("Dados do formulário:", data);
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex flex-row">
@@ -305,17 +311,10 @@ export default function Dashboard() {
                         <SheetTitle>{project.name}</SheetTitle>
                         <SheetDescription>
                           {project.description}
-                        </SheetDescription>
-
-                       
-                          <FormProvider {...taskMethods}>
-                            <form
-                              onSubmit={taskMethods.handleSubmit(onSubmitTask)}
-                            >
-                              <TaskForm/>
-                            </form>
-                          </FormProvider>
-                  
+                        </SheetDescription>                       
+                          <FormBase onSubmit={handleSubmit} defaultValues={{ tasks: [{ name: "", description: "" }] }}>
+                            <FormTask/>
+                          </FormBase>
                       </SheetHeader>
                       <SheetFooter>
                       
