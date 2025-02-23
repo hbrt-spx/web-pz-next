@@ -9,18 +9,14 @@ import { Progress } from "../components/atoms/progress";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetFooter,
   SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "../components/molecules/sheet";
-import { FormProvider, useForm } from "react-hook-form";
-import { Input } from "../components/atoms/input";
 import { toast } from "react-toastify";
-import FormTask from "../components/organisms/form-task";
-import FormBase from "../components/organisms/form-base";
-
+import { IFormProject, ITaskForm } from "../types/forms";
+import CreateProjectForm from "../components/organisms/create-project-form";
+import ProjectCard from "../components/organisms/project-card";
 
 const UserProfile = () => {
   const { setUser } = useUserStore();
@@ -97,7 +93,7 @@ const UserProfile = () => {
       {userDetails && (
         <div>
           <p>
-            <strong>Bem vindo: </strong> {userDetails.name}
+            <strong>Bem-vindo: </strong> {userDetails.name}
           </p>
         </div>
       )}
@@ -106,23 +102,9 @@ const UserProfile = () => {
 };
 
 export default function Dashboard() {
-  interface IFormProject {
-    name: string;
-    description: string;
-  }
-
-  interface ITaskForm {
-    taskName: string;
-    taskDescription: string;
-    assignee: string;
-    images: string[];
-  }
-
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const token = Cookie.get("token");
-  const methods = useForm<IFormProject>();
-  const taskMethods = useForm<ITaskForm>();
   const { projects, addProject, fetchProjects } = useProjectStore();
 
   const onSubmitProject = async (data: IFormProject) => {
@@ -239,20 +221,17 @@ export default function Dashboard() {
             <li>Projects</li>
             <li>Settings</li>
             <li>Profile</li>
-
-            
-           
           </div>
-              <Button
-                onClick={handleLogout}
-                className=" w-full mt-auto bg-red-500 text-white"
-              >
-                Logoff
-              </Button>
+
+          <Button
+            onClick={handleLogout}
+            className="w-full mt-auto bg-red-500 text-white"
+          >
+            Logoff
+          </Button>
         </div>
 
-       
-        <div className="flex flex-col flex-grow">         
+        <div className="flex flex-col flex-grow">
           <div className="flex w-full h-14 items-center bg-white border-b">
             <div className="flex w-[80%] justify-center items-center">
               <UserProfile />
@@ -264,28 +243,9 @@ export default function Dashboard() {
                 </SheetTrigger>
                 <SheetContent>
                   <SheetHeader>
-                    <FormProvider {...methods}>
-                      <form onSubmit={methods.handleSubmit(onSubmitProject)}>
-                        <Input
-                          name="name"
-                          type="text"
-                          placeholder="Nome do Projeto"
-                        />
-                        <Input
-                          name="description"
-                          type="text"
-                          placeholder="Descrição do Projeto"
-                        />
-
-                        <Button type="submit" className="w-full mt-2">
-                          Criar
-                        </Button>
-                      </form>
-                    </FormProvider>
+                    <CreateProjectForm onSubmit={onSubmitProject} />
                   </SheetHeader>
-                  <SheetFooter>
-                  
-                  </SheetFooter>
+                  <SheetFooter></SheetFooter>
                 </SheetContent>
               </Sheet>
             </div>
@@ -294,34 +254,7 @@ export default function Dashboard() {
           <div className="flex flex-wrap justify-start gap-4 p-6 mt-4">
             {projects.length > 0 ? (
               projects.map((project) => (
-                <div
-                  key={project.id}
-                  className="w-[300px] bg-gray-100 rounded-lg p-4 shadow-md mb-4"
-                >
-                  <h2 className="text-xl font-bold">{project.name}</h2>
-                  <p>{project.description}</p>
-                  <Sheet>
-                    <SheetTrigger asChild>
-                      <Button variant="outline" className="mt-2">
-                        Ver Detalhes
-                      </Button>
-                    </SheetTrigger>
-                    <SheetContent>
-                      <SheetHeader>
-                        <SheetTitle>{project.name}</SheetTitle>
-                        <SheetDescription>
-                          {project.description}
-                        </SheetDescription>                       
-                          <FormBase onSubmit={handleSubmit} defaultValues={{ tasks: [{ name: "", description: "" }] }}>
-                            <FormTask/>
-                          </FormBase>
-                      </SheetHeader>
-                      <SheetFooter>
-                      
-                      </SheetFooter>
-                    </SheetContent>
-                  </Sheet>
-                </div>
+                <ProjectCard key={project.id} project={project} />
               ))
             ) : (
               <p>Nenhum projeto foi criado ainda.</p>

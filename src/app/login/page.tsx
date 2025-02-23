@@ -6,6 +6,7 @@ import CardLogin from "../components/templates/card-login";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Progress } from "../components/atoms/progress";
+import { verifyToken } from "../utils/auth";
 
 export default function SignIn() {
   const router = useRouter();
@@ -15,30 +16,17 @@ export default function SignIn() {
     const token = Cookie.get('token');
     
     if (token) {
-      const verifyToken = async () => {
-        try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/get-user`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`,
-            },
-          });
+      const checkToken = async () => {
+       const isValidToken = await verifyToken(token)
 
-          if (response.ok) {
-            router.push('/dashboard');
-          } else {           
-            setLoading(false);
-          }
-        } catch (err) {
-        
-          setLoading(false);
-        }
+       if(isValidToken){
+        router.push('/dashboard')
+       } else {
+        setLoading(false)
+       }          
       };
-
-      verifyToken();
-    } else {
-     
+      checkToken();
+    } else {     
       setLoading(false);
     }
   }, [router]);
