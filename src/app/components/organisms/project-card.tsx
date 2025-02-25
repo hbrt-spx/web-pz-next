@@ -9,7 +9,7 @@ interface ProjectCardProps {
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
   const handleSubmit = (data: any) => {
-    console.log("Dados do formulário:", data);
+    console.log("Dados do formulário:", data); //Continuar
   };
 
   return (

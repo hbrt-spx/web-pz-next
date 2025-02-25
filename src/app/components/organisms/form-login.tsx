@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Input } from "@/src/app/components/atoms/input";
-import { Label } from "@/src/app/components/atoms/label";
 import { Button } from "@/src/app/components/atoms/button";
 import { InputPass } from "../molecules/input-password";
 import Cookie from "js-cookie";

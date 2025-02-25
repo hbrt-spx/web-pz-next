@@ -123,10 +123,6 @@ export default function Dashboard() {
     return <Progress />;
   }
 
-  const handleSubmit = (data: any) => {
-    console.log("Dados do formulário:", data);
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex flex-row">
