@@ -7,10 +7,10 @@ import { Input } from "@/src/app/components/atoms/input";
 import { Label } from "@/src/app/components/atoms/label";
 import { Button } from "@/src/app/components/atoms/button";
 import { InputPass } from "../molecules/input-password";
-import Cookie from 'js-cookie';
+import Cookie from "js-cookie";
 import { LabelForgotPass } from "../molecules/label-forgotpass";
 import { toast } from "react-toastify";
-
+import FormBase from "./form-base";
 
 const schema = yup.object({
   email: yup.string().email("Email inválido").required("E-mail é obrigatório."),
@@ -29,26 +29,28 @@ interface IFormLogin {
   password: string;
 }
 function FormLogin() {
-
   const methods = useForm<IFormLogin>({
     resolver: yupResolver(schema),
   });
 
- const onSubmit = async (data: IFormLogin) => {
+  const onSubmit = async (data: IFormLogin) => {
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
         if (errorData.message) {
-          toast.error(errorData.message)
-      } else {
+          toast.error(errorData.message);
+        } else {
           toast.error("Erro ao autenticar. Tente novamente.");
         }
         return;
@@ -57,29 +59,25 @@ function FormLogin() {
       const userData = await response.json();
 
       if (userData?.access_token) {
-
-        Cookie.set('token', userData.access_token);
+        Cookie.set("token", userData.access_token);
         window.location.href = "/dashboard";
       } else {
-        console.error('Token não encontrado na resposta');
+        console.error("Token não encontrado na resposta");
       }
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
+      console.error("Erro ao fazer login:", error);
     }
   };
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <Input name="email" type="email" placeholder="E-mail"/>
-        <InputPass name="password" type="password" placeholder="Senha"
-         />
-        <LabelForgotPass />
-        <Button type="submit" className="w-full mt-2">
-          Acessar
-        </Button>
-      </form>
-    </FormProvider>
+    <FormBase onSubmit={onSubmit}>
+      <Input name="email" type="email" placeholder="E-mail" />
+      <InputPass name="password" type="password" placeholder="Senha" />
+      <LabelForgotPass />
+      <Button type="submit" className="w-full mt-2">
+        Acessar
+      </Button>
+    </FormBase>
   );
 }
 

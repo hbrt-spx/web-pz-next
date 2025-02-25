@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Cookie from "js-cookie";
-import { useUserStore } from "@/src/app/stores/userStore";
 import { useProjectStore } from "@/src/app/stores/projectStore";
 import { Button } from "@/src/app/components/atoms/button";
 import { useRouter } from "next/navigation";
@@ -17,89 +16,7 @@ import { toast } from "react-toastify";
 import { IFormProject, ITaskForm } from "../types/forms";
 import CreateProjectForm from "../components/organisms/create-project-form";
 import ProjectCard from "../components/organisms/project-card";
-
-const UserProfile = () => {
-  const { setUser } = useUserStore();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [userDetails, setUserDetails] = useState<any>(null);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const token = Cookie.get("token");
-      if (!token) {
-        setError("Token não encontrado!");
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/get-user`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error("Token expirado ou inválido");
-        }
-
-        const data = await response.json();
-        setUser(data);
-
-        const userId = data.sub;
-        const userResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (!userResponse.ok) {
-          throw new Error("Erro ao recuperar detalhes do usuário");
-        }
-
-        const userDetailsData = await userResponse.json();
-        setUserDetails(userDetailsData);
-        setLoading(false);
-      } catch (err: any) {
-        setError(err.message);
-        setLoading(false);
-      }
-    };
-
-    fetchUserData();
-  }, [setUser]);
-
-  if (loading) {
-    return <div>Carregando...</div>;
-  }
-
-  if (error) {
-    return <div>Erro: {error}</div>;
-  }
-
-  return (
-    <div>
-      {userDetails && (
-        <div>
-          <p>
-            <strong>Bem-vindo: </strong> {userDetails.name}
-          </p>
-        </div>
-      )}
-    </div>
-  );
-};
+import UserProfile from "../components/organisms/user-profile";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -234,7 +151,7 @@ export default function Dashboard() {
         <div className="flex flex-col flex-grow">
           <div className="flex w-full h-14 items-center bg-white border-b">
             <div className="flex w-[80%] justify-center items-center">
-              <UserProfile />
+              <UserProfile token={token || ''}/>
             </div>
             <div className="flex w-[20%] items-center justify-center">
               <Sheet>

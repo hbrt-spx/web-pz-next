@@ -1,5 +1,3 @@
-// src/app/components/organisms/ProjectCard.tsx
-
 import { Button } from "../atoms/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription, SheetTrigger } from "../molecules/sheet";
 import FormBase from "./form-base";

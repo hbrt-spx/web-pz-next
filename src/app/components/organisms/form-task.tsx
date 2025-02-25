@@ -1,11 +1,11 @@
 import { useFormContext, useFieldArray } from "react-hook-form";
-import { Button } from "../atoms/button"; // Supondo que você tenha um botão personalizado
+import { Button } from "../atoms/button";
 
 const FormTask = () => {
-  const { control } = useFormContext(); // Pega o contexto do formulário
+  const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "tasks", // Nome do campo do array no estado do formulário
+    name: "tasks",
   });
 
   return (

@@ -10,3 +10,10 @@ export interface IFormProject {
     assignee: string;
     images: string[];
   }
+
+  export interface IFormRegister {
+    name: string;
+    email: string;
+    password: string;
+    confirm: string;
+  }

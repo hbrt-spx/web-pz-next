@@ -3,10 +3,11 @@ import { useForm, FormProvider } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Input } from "@/src/app/components/atoms/input";
-import { Label } from "@/src/app/components/atoms/label";
 import { Button } from "@/src/app/components/atoms/button";
 import { toast } from "react-toastify";
 import { InputPass } from "../molecules/input-password";
+import { IFormRegister } from "../../types/forms";
+import FormBase from "./form-base";
 
 const schema = yup.object({
   name: yup
@@ -29,13 +30,6 @@ const schema = yup.object({
     .oneOf([yup.ref("password")], "As senhas não coincidem")
     .required("Campo de preenchimento obrigatório."),
 });
-
-interface IFormRegister {
-  name: string;
-  email: string;
-  password: string;
-  confirm: string;
-}
 
 function FormRegister() {
   const methods = useForm<IFormRegister>({
@@ -70,9 +64,8 @@ function FormRegister() {
   };
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <Input
+    <FormBase onSubmit={onSubmit}>
+      <Input
           name="name"
           type="text"
           placeholder='Nome completo'
@@ -95,8 +88,7 @@ function FormRegister() {
         <Button type="submit" className="w-full mt-2 font-bold">
           Cadastrar
         </Button>
-      </form>
-    </FormProvider>
+    </FormBase>
   );
 }
 
