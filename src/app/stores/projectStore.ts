@@ -1,5 +1,5 @@
-import Cookie from "js-cookie";
 import { create } from "zustand";
+import Cookie from "js-cookie";
 
 interface Project {
   id: string;
@@ -13,14 +13,20 @@ interface ProjectStore {
   projects: Project[];
   addProject: (project: Project) => void;
   setProjects: (projects: Project[]) => void;
+  removeProject: (projectId: string) => void;
   fetchProjects: () => Promise<void>;
 }
 
 export const useProjectStore = create<ProjectStore>((set) => ({
   projects: [],
-  addProject: (project: Project) =>
-    set((state: ProjectStore) => ({ projects: [...state.projects, project] })),
-  setProjects: (projects: Project[]) => set({ projects }),
+  addProject: (project) => set((state) => ({ projects: [...state.projects, project] })),
+  setProjects: (projects) => set({ projects }),
+
+  removeProject: (projectId: string) => {
+    set((state) => ({
+      projects: state.projects.filter((project) => project.id !== projectId),
+    }));
+  },
 
   fetchProjects: async () => {
     const token = Cookie.get("token");
@@ -48,13 +54,7 @@ export const useProjectStore = create<ProjectStore>((set) => ({
       }
 
       const data: Project[] = await response.json();
-      
-      if (data && data.length > 0) {
-        set({ projects: data });
-        console.log("Projetos recebidos:", data);
-      } else {
-        console.error("Nenhum projeto encontrado ou resposta vazia");
-      }
+      set({ projects: data });
     } catch (error) {
       console.error("Erro ao buscar projetos:", error);
     }

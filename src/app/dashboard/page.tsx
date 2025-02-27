@@ -22,7 +22,7 @@ export default function Dashboard() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const token = Cookie.get("token");
-  const { projects, addProject, fetchProjects } = useProjectStore();
+  const { projects, addProject, fetchProjects, removeProject } = useProjectStore();
 
   const onSubmitProject = async (data: IFormProject) => {
     try {
@@ -167,7 +167,7 @@ export default function Dashboard() {
           <div className="flex flex-wrap justify-start gap-4 p-6 mt-4">
             {projects.length > 0 ? (
               projects.map((project) => (
-                <ProjectCard key={project.id} project={project} />
+                <ProjectCard key={project.id} project={project} onDelete={removeProject}/>
               ))
             ) : (
               <p>Nenhum projeto foi criado ainda.</p>
