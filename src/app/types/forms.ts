@@ -17,3 +17,11 @@ export interface IFormProject {
     password: string;
     confirm: string;
   }
+
+  export interface IFormTask {
+    titulo: string
+    descricao: string
+    responsavelId: string
+    projetoId: string
+    status: string
+  }

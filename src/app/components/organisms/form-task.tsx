@@ -14,13 +14,13 @@ const FormTask = () => {
         <div key={item.id} className="flex gap-4 w-full border-b pb-4">
           <div className="w-full flex flex-col gap-2">
             <input
-              {...control.register(`tasks[${index}].name`)}
+              {...control.register(`tasks[${index}].titulo`)}
               type="text"
               placeholder="Nome da Tarefa"
               className="w-full p-2 border rounded"
             />
             <textarea
-              {...control.register(`tasks[${index}].description`)}
+              {...control.register(`tasks[${index}].descricao`)}
               placeholder="Descrição da Tarefa"
               className="w-full p-2 border rounded"
               rows={3}
@@ -30,7 +30,7 @@ const FormTask = () => {
           <div className="flex flex-col justify-center items-center gap-2">
             <Button
               type="button"
-              onClick={() => append({ name: "", description: "" })}
+              onClick={() => append({ titulo: "", descricao: "" })}
               className="w-full bg-green-500 text-white py-2 gap-1 rounded-sm"
             >
               +
