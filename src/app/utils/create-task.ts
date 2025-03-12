@@ -15,10 +15,10 @@ export const onSubmitTask = async (data: IFormTask, projectId: string) => {
       const userId = decodedToken.sub;  
 
       const taskData = {
-        titulo: data.titulo,
-        descricao: data.descricao,
-        responsavelId: userId,
-        projetoId: projectId,
+        title: data.title,
+        description: data.description,
+        userId: userId,
+        projectId: projectId,
         status: data.status || "PENDENTE"
       };
 
@@ -33,7 +33,6 @@ export const onSubmitTask = async (data: IFormTask, projectId: string) => {
           body: JSON.stringify(taskData),
         }
       );
-        console.log('1', response.json)
 
       if (!response.ok) {
         const errorData = await response.json();

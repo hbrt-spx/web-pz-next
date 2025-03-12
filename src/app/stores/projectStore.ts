@@ -5,7 +5,7 @@ interface Project {
   id: string;
   name: string;
   description: string;
-  criadorId: string;
+  creatorId: string;
   adminId: string;
 }
 

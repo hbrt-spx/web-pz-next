@@ -2,8 +2,8 @@ import {create} from "zustand";
 
 interface Task {
   id: string;
-  titulo: string;
-  descricao: string;
+  title: string;
+  description: string;
 }
 
 interface TaskStore {

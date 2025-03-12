@@ -38,7 +38,7 @@ export default function Dashboard() {
       const projectData = {
         name: data.name,
         description: data.description,
-        criadorId: userId,
+        creatorId: userId,
         adminId: userId,
       };
 

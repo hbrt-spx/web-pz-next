@@ -1,3 +1,4 @@
+"use client"
 import { toast } from "react-toastify";
 import { deleteProject } from "../../utils/delete-project";
 import { Button } from "../atoms/button";
@@ -30,10 +31,11 @@ interface ProjectCardProps {
 
 const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const { tasks, addTask } = useTaskStore();
+  const { tasks, addTask, clearTasks } = useTaskStore();
 
   useEffect(() => {
     getTask(project.id);
+    console.log("Esta rodando?")
   }, [project.id]);
 
   const handleSubmit = (data: any) => {
@@ -74,7 +76,10 @@ const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
     <div className="w-[300px] bg-gray-100 rounded-lg p-4 shadow-md mb-4">
       <h2 className="text-xl font-bold">{project.name}</h2>
       <p>{project.description}</p>
-      <Sheet>
+      <Sheet onOpenChange={(event)=>{
+        clearTasks()
+        if(event) getTask(project.id)     
+      }}>
         <SheetTrigger asChild>
           <Button variant="outline" className="mt-2">
             Ver Detalhes
@@ -84,7 +89,7 @@ const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
           <SheetHeader>
             <SheetTitle>{project.name}</SheetTitle>
             <SheetDescription>{project.description}</SheetDescription>
-            <div className="overflow-y-auto max-h-[200px]">
+            <div className="overflow-y-auto max-h-[250px]">
               <FormBase
                 onSubmit={handleCreateTasks}
                 defaultValues={{ tasks: [{ name: "", description: "" }] }}
@@ -92,12 +97,12 @@ const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
                 <FormTask />
               </FormBase>
             </div>
-            <div className="overflow-y-auto max-h-[300px]">
+            <div className="overflow-y-auto max-h-[400px] ">
               {tasks.length > 0 ? (
                 tasks.map((task) => (
-                  <div key={task.id} className="task border">
-                    <h3 className="text-lg font-semibold">{task.titulo}</h3>
-                    <p>{task.descricao}</p>
+                  <div key={task.id} className="task border gap-5">
+                    <h3 className="text-lg font-semibold">Titulo: {task.title}</h3>
+                    <p className="">Descrição: {task.description}</p>
                     <Button>Excluir</Button>
                   </div>
                 ))

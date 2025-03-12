@@ -12,7 +12,7 @@ export const getTask = async (projectId: string) => {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/tasks?projectId=${projectId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/tasks/project-tasks/${projectId}`,
         {
           method: "GET",
           headers: {

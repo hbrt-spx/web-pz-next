@@ -19,8 +19,8 @@ export interface IFormProject {
   }
 
   export interface IFormTask {
-    titulo: string
-    descricao: string
+    title: string
+    description: string
     responsavelId: string
     projetoId: string
     status: string
