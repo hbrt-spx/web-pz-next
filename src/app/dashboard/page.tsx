@@ -24,6 +24,7 @@ export default function Dashboard() {
   const token = Cookie.get("token");
   const { projects, addProject, fetchProjects, removeProject } = useProjectStore();
 
+
   const onSubmitProject = async (data: IFormProject) => {
     try {
       const token = Cookie.get("token");
@@ -31,9 +32,8 @@ export default function Dashboard() {
         toast.error("Token não encontrado");
         return;
       }
-
-      const decodedToken = JSON.parse(atob(token.split(".")[1]));
-      const userId = decodedToken.sub;
+  const decodedToken = JSON.parse(atob(token.split(".")[1]));
+  const userId = decodedToken.sub;
 
       const projectData = {
         name: data.name,
@@ -92,9 +92,17 @@ export default function Dashboard() {
     }
 
     const validateToken = async () => {
+
+       const token = Cookie.get("token");
+      if (!token) {
+        toast.error("Token não encontrado");
+        return;
+      }
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
+      const userId = decodedToken.sub;
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/get-user`,
+          `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
           {
             method: "GET",
             headers: {

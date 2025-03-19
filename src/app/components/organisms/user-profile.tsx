@@ -1,91 +1,75 @@
-import { useEffect, useState } from "react"
-import { useUserStore } from "../../stores/userStore"
-import { Progress } from "../atoms/progress"
+import { useEffect, useState } from "react";
+import { useUserStore } from "../../stores/userStore";
+import { Progress } from "../atoms/progress";
+import Cookie from "js-cookie";
 
 interface UserProfileProps {
-    token: string
+  token: string;
 }
 
-const UserProfile = ({token}: UserProfileProps) => {
-    const {setUser} = useUserStore()
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState<string | null>(null)
-    const [userDetails, setUserDetails] = useState<any>(null)
+const UserProfile = ({ token }: UserProfileProps) => {
+  const { setUser } = useUserStore();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [userDetails, setUserDetails] = useState<any>(null);
 
-    useEffect(()=>{
-        const fetchUserData = async ()=>{
-            if(!token){
-                setError("Token não foi encontrado")
-                setLoading(false)
-                return
-            }
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const token = Cookie.get("token");
+      if (!token) {
+        setError("Token não foi encontrado");
+        setLoading(false);
+        return;
+      }
 
-            try {
-                const response = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/auth/get-user`,
-                    {
-                      method: "GET",
-                      headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                      },
-                    }
-                  );
-          
-                  if (!response.ok) {
-                    throw new Error("Token expirado ou inválido");
-                  }
+      const decodedToken = JSON.parse(atob(token.split(".")[1]));
 
-                  const data = await response.json()
-                  setUser(data)
+      const userId = decodedToken.sub;
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-                  const userId = data.sub
+        if (!response.ok) {
+          throw new Error("Token expirado ou inválido");
+        }       
 
-                  const userResponse = await fetch(
-                    `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
-                    {
-                      method: "GET",
-                      headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`,
-                      },
-                    }
-                  );
+        const userDetailsData = await response.json();
+        setUserDetails(userDetailsData);
+        setLoading(false);
+      } catch (error: any) {
+        setError(error.message);
+        setLoading(false);
+      }
+    };
 
-                  if (!userResponse.ok){
-                    throw new Error("Error ao recuperar detalhes do usuário")
-                  }
+    fetchUserData();
+  }, [token, setUser]);
 
-                  const userDetailsData = await userResponse.json()
-                  setUserDetails(userDetailsData)
-                  setLoading(false)
-                } catch (error: any) {
-                    setError(error.message)
-                    setLoading(false)                
-            }
-        }
+  if (loading) {
+    return <Progress />;
+  }
 
-        fetchUserData()
-    }, [token, setUser])
+  if (error) {
+    return <div>Erro: {error}</div>;
+  }
 
-
-    if (loading){
-        return <Progress/>
-    }
-
-    if (error) {
-        return <div>Erro: {error}</div>
-    }
-
-    return (
-        <div>
+  return (
+    <div>
       {userDetails && (
         <p>
           <strong>Bem vindo: </strong> {userDetails.name}
         </p>
       )}
     </div>
-    )
-}
+  );
+};
 
-export default UserProfile
+export default UserProfile;
