@@ -98,12 +98,13 @@ const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
               </FormBase>
             </div>
             <div className="overflow-y-auto max-h-[400px] ">
+              <h1>Tarefas</h1>
               {tasks.length > 0 ? (
                 tasks.map((task) => (
                   <div key={task.id} className="task border gap-5">
                     <h3 className="text-lg font-semibold">Titulo: {task.title}</h3>
                     <p className="">Descrição: {task.description}</p>
-                    <Button>Excluir</Button>
+                    <Button className="bg-red-600">Excluir</Button>
                   </div>
                 ))
               ) : (

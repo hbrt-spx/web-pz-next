@@ -19,7 +19,7 @@ export const onSubmitTask = async (data: IFormTask, projectId: string) => {
         description: data.description,
         userId: userId,
         projectId: projectId,
-        status: data.status || "PENDENTE"
+        status: data.status || "Pendente"
       };
 
       const response = await fetch(

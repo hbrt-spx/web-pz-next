@@ -38,8 +38,7 @@ export default function Dashboard() {
       const projectData = {
         name: data.name,
         description: data.description,
-        creatorId: userId,
-        adminId: userId,
+        userId: userId,
       };
 
       const response = await fetch(
