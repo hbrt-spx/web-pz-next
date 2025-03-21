@@ -5,18 +5,12 @@ import { useProjectStore } from "@/src/app/stores/projectStore";
 import { Button } from "@/src/app/components/atoms/button";
 import { useRouter } from "next/navigation";
 import { Progress } from "../components/atoms/progress";
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTrigger,
-} from "../components/molecules/sheet";
 import { toast } from "react-toastify";
 import { IFormProject, ITaskForm } from "../types/forms";
 import CreateProjectForm from "../components/organisms/create-project-form";
 import ProjectCard from "../components/organisms/project-card";
 import UserProfile from "../components/organisms/user-profile";
+import { Popover, PopoverContent, PopoverTrigger } from "../components/molecules/popover";
 
 export default function Dashboard() {
   const router = useRouter();
@@ -157,17 +151,14 @@ export default function Dashboard() {
               <UserProfile token={token || ''}/>
             </div>
             <div className="flex w-[20%] items-center justify-center">
-              <Sheet>
-                <SheetTrigger asChild>
+              <Popover>
+                <PopoverTrigger asChild>
                   <Button>+ Novo Projeto</Button>
-                </SheetTrigger>
-                <SheetContent>
-                  <SheetHeader>
-                    <CreateProjectForm onSubmit={onSubmitProject} />
-                  </SheetHeader>
-                  <SheetFooter></SheetFooter>
-                </SheetContent>
-              </Sheet>
+                </PopoverTrigger>
+                <PopoverContent>               
+                    <CreateProjectForm onSubmit={onSubmitProject} />                  
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
 

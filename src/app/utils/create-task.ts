@@ -47,7 +47,6 @@ export const onSubmitTask = async (data: IFormTask, projectId: string) => {
       const responseData = await response.json();
       if (responseData) {
         toast.success("Projeto criado com sucesso!");
-        //Criar um store pra trazer tarefas
       }
     } catch (error) {
       console.error("Erro ao criar o projeto:", error);

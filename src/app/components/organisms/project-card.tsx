@@ -2,21 +2,14 @@
 import { toast } from "react-toastify";
 import { deleteProject } from "../../utils/delete-project";
 import { Button } from "../atoms/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetTrigger,
-  SheetFooter,
-} from "../molecules/sheet";
 import FormBase from "./form-base";
 import FormTask from "./form-task";
 import { useEffect, useState } from "react";
 import { onSubmitTask } from "../../utils/create-task";
 import { getTask } from "../../utils/get-task";
 import { useTaskStore } from "../../stores/taskStore";
+import { deleteTask } from "../../utils/delete-task";
+import { Dialog, DialogContent, DialogTrigger } from "../molecules/dialog";
 
 interface Project {
   id: string;
@@ -63,6 +56,18 @@ const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
     }
   };
 
+  const handleDeleteTask = async (taskId: string) => {
+  try {
+    await deleteTask(taskId);    
+    clearTasks()
+    getTask(project.id);
+  } catch (error) {
+    console.error("Erro ao excluir tarefa", error);
+    toast.error("Erro ao excluir a tarefa.");
+  }
+};
+
+
   const handleCreateTasks = async (data: any): Promise<void> => {
     console.log("Tarefas criadas:", data.tasks);
 
@@ -76,19 +81,18 @@ const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
     <div className="w-[300px] bg-gray-100 rounded-lg p-4 shadow-md mb-4">
       <h2 className="text-xl font-bold">{project.name}</h2>
       <p>{project.description}</p>
-      <Sheet onOpenChange={(event)=>{
+      <Dialog onOpenChange={(event)=>{
         clearTasks()
         if(event) getTask(project.id)     
       }}>
-        <SheetTrigger asChild>
+        <DialogTrigger>
           <Button variant="outline" className="mt-2">
             Ver Detalhes
-          </Button>
-        </SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>{project.name}</SheetTitle>
-            <SheetDescription>{project.description}</SheetDescription>
+          </Button>         
+        </DialogTrigger>
+        <DialogContent>
+            <h1>{project.name}</h1>
+            <h2>{project.description}</h2>
             <div className="overflow-y-auto max-h-[250px]">
               <FormBase
                 onSubmit={handleCreateTasks}
@@ -104,15 +108,13 @@ const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
                   <div key={task.id} className="task border gap-5">
                     <h3 className="text-lg font-semibold">Titulo: {task.title}</h3>
                     <p className="">Descrição: {task.description}</p>
-                    <Button className="bg-red-600">Excluir</Button>
+                    <Button className="bg-red-600" onClick={() => handleDeleteTask(task.id)}>Excluir</Button>
                   </div>
                 ))
               ) : (
                 <p>Sem tarefas disponíveis</p>
               )}
             </div>
-          </SheetHeader>
-          <SheetFooter className="flex w-[100%] h-[60%] items-end justify-end">
             <Button
               className="bg-red-600 hover:bg-red-700"
               onClick={handleDelete}
@@ -120,9 +122,8 @@ const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
             >
               {isDeleting ? "Excluindo..." : "Excluir Projeto"}
             </Button>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

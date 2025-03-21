@@ -2,7 +2,7 @@ import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import { useTaskStore } from "../stores/taskStore";
 
-export const getTask = async (projectId: string) => {
+export const deleteTask = async (taskId: string) => {
    
     try { 
       const token = Cookie.get("token");
@@ -12,9 +12,9 @@ export const getTask = async (projectId: string) => {
       }
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/tasks/project-tasks/${projectId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/tasks/${taskId}`,
         {
-          method: "GET",
+          method: "DELETE",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ export const getTask = async (projectId: string) => {
         if (errorData.message) {
           toast.error(errorData.message);
         } else {
-          toast.error("Erro ao criar o tarefa. Tente novamente.");
+          toast.error("Erro ao deletar a tarefa. Tente novamente.");
         }
         return;
       }
@@ -35,11 +35,11 @@ export const getTask = async (projectId: string) => {
       const responseData = await response.json();
       if (responseData) {
         useTaskStore.getState().setTasks(responseData)
-        toast.success("Tarefa criado com sucesso!");
+        toast.success("Tarefa excluida com sucesso!");
       }
     } catch (error) {
-      console.error("Erro ao criar o Tarefa:", error);
-      toast.error("Erro ao criar o Tarefa. Tente novamente.");
+      console.error("Erro ao deletar a Tarefa:", error);
+      toast.error("Erro ao deletar o Tarefa. Tente novamente.");
     }
   };
       
