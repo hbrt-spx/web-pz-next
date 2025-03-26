@@ -38,6 +38,7 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
+        "fixed top-0 right-0 z-50 w-[500px] h-full bg-white overflow-y-auto p-6",
         className
       )}
       {...props}
@@ -49,8 +50,10 @@ const DialogContent = React.forwardRef<
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>
   </DialogPortal>
-))
+));
 DialogContent.displayName = DialogPrimitive.Content.displayName;
+
+
 
 
 const DialogHeader = ({

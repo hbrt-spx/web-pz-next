@@ -64,7 +64,6 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)'
       },
-      // Aqui está o ajuste para as larguras e alturas customizadas
       theme: {
         extend: {
           spacing: {
@@ -74,7 +73,6 @@ export default {
             '800': '800px',
             '1000': '1000px',
           },
-          // Registrando esses tamanhos no sistema de `variant` do Tailwind
           maxWidth: {
             '320': '320px',
             '480': '480px',

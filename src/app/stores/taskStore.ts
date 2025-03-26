@@ -1,4 +1,4 @@
-import {create} from "zustand";
+import { create } from "zustand";
 
 interface Task {
   id: string;
@@ -7,15 +7,30 @@ interface Task {
 }
 
 interface TaskStore {
-  tasks: Task[];
-  setTasks: (tasks: Task[]) => void;
-  addTask: (task: Task) => void;
-  clearTasks: () => void;
+  tasksByProject: { [projectId: string]: Task[] };
+  setTasks: (projectId: string, tasks: Task[]) => void;
+  addTask: (projectId: string, task: Task) => void;
+  clearTasks: (projectId: string) => void;
 }
 
 export const useTaskStore = create<TaskStore>((set) => ({
-  tasks: [],
-  setTasks: (tasks) => set({ tasks }),
-  addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] })),
-  clearTasks: () => set({ tasks: [] }),
+  tasksByProject: {},
+  setTasks: (projectId, tasks) => set((state) => ({
+    tasksByProject: {
+      ...state.tasksByProject,
+      [projectId]: tasks, 
+    }
+  })),
+  addTask: (projectId, task) => set((state) => ({
+    tasksByProject: {
+      ...state.tasksByProject,
+      [projectId]: [...(state.tasksByProject[projectId] || []), task],
+    }
+  })),
+  clearTasks: (projectId) => set((state) => ({
+    tasksByProject: {
+      ...state.tasksByProject,
+      [projectId]: [], 
+    }
+  })),
 }));
