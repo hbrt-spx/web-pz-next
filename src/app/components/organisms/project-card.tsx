@@ -1,4 +1,3 @@
-"use client";
 import { toast } from "react-toastify";
 import { deleteProject } from "../../utils/delete-project";
 import { Button } from "../atoms/button";
@@ -92,43 +91,42 @@ const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
             Ver Detalhes
           </Button>      
         </DialogTrigger>
-        <DialogContent>
           <DialogTitle>
-
           <h1>{project.name}</h1>
           </DialogTitle>
           <h2>{project.description}</h2>
-          <div className="overflow-y-auto max-h-[250px]">
-            <FormBase
-              onSubmit={handleCreateTasks}
-              defaultValues={{ tasks: [{ name: "", description: "" }] }}
+        <DialogContent>
+            <h1>{project.name}</h1>
+            <h2>{project.description}</h2>
+            <div className="overflow-y-auto max-h-[250px]">
+              <FormBase
+                onSubmit={handleCreateTasks}
+                defaultValues={{ tasks: [{ name: "", description: "" }] }}
+              >
+                <FormTask />
+              </FormBase>
+            </div>
+            <div className="overflow-y-auto max-h-[400px] ">
+              <h1>Tarefas</h1>
+              {tasks.length > 0 ? (
+                tasks.map((task) => (
+                  <div key={task.id} className="task border gap-5">
+                    <h3 className="text-lg font-semibold">Titulo: {task.title}</h3>
+                    <p className="">Descrição: {task.description}</p>
+                    <Button className="bg-red-600" onClick={() => handleDeleteTask(task.id)}>Excluir</Button>
+                  </div>
+                ))
+              ) : (
+                <p>Sem tarefas disponíveis</p>
+              )}
+            </div>
+            <Button
+              className="bg-red-600 hover:bg-red-700"
+              onClick={handleDelete}
+              disabled={isDeleting}
             >
-              <FormTask />
-            </FormBase>
-          </div>
-          <div className="overflow-y-auto max-h-[400px]">
-            <h1>Tarefas</h1>
-            {tasks.length > 0 ? (
-              tasks.map((task) => (
-                <div key={task.id} className="task border gap-5">
-                  <h3 className="text-lg font-semibold">Titulo: {task.title}</h3>
-                  <p>Descrição: {task.description}</p>
-                  <Button className="bg-red-600" onClick={() => handleDeleteTask(task.id)}>
-                    Excluir
-                  </Button>
-                </div>
-              ))
-            ) : (
-              <p>Sem tarefas disponíveis</p>
-            )}
-          </div>
-          <Button
-            className="bg-red-600 hover:bg-red-700"
-            onClick={handleDelete}
-            disabled={isDeleting}
-          >
-            {isDeleting ? "Excluindo..." : "Excluir Projeto"}
-          </Button>
+              {isDeleting ? "Excluindo..." : "Excluir Projeto"}
+            </Button>
         </DialogContent>
       </Dialog>
       
