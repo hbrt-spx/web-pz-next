@@ -10,6 +10,7 @@ import Cookie from "js-cookie";
 import { LabelForgotPass } from "../molecules/label-forgotpass";
 import { toast } from "react-toastify";
 import FormBase from "./form-base";
+import { api } from "../../services/api";
 
 const schema = yup.object({
   email: yup.string().email("Email inválido").required("E-mail é obrigatório."),
@@ -34,32 +35,31 @@ function FormLogin() {
 
   const onSubmit = async (data: IFormLogin) => {
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        if (errorData.message) {
-          toast.error(errorData.message);
-        } else {
-          toast.error("Erro ao autenticar. Tente novamente.");
-        }
-        return;
+      const response = await api({
+        url: 'auth/login',
+        method: 'POST',
+        body: data
       }
+    );
+    if(!response){
+      
+    }
+    const userData = await response;
+    Cookie.set("token", userData.access_token);
+    window.location.href = "/dashboard";
 
-      const userData = await response.json();
+      // if (!response.ok) {
+      //   const errorData = await response.json();
+      //   if (errorData.message) {
+      //     toast.error(errorData.message);
+      //   } else {
+      //     toast.error("Erro ao autenticar. Tente novamente.");
+      //   }
+      //   return;
+      // }
+
 
       if (userData?.access_token) {
-        Cookie.set("token", userData.access_token);
-        window.location.href = "/dashboard";
       } else {
         console.error("Token não encontrado na resposta");
       }

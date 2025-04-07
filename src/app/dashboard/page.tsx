@@ -12,13 +12,13 @@ import ProjectCard from "../components/organisms/project-card";
 import UserProfile from "../components/organisms/user-profile";
 import { Popover, PopoverContent, PopoverTrigger } from "../components/molecules/popover";
 import { createProject } from "../utils/create-projects";
-import { getUser } from "../utils/get-user";
+import { api } from "../services/api";
 
 export default function Dashboard() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const token = Cookie.get("token");
-  const { projects, addProject, fetchProjects, removeProject } = useProjectStore();
+  const { projects, addProject, getProjects, removeProject } = useProjectStore();
 
 
   const onSubmitProject = async (data: IFormProject) => {
@@ -41,74 +41,92 @@ export default function Dashboard() {
     }
 
    const fetchUser = async () => {
-      const { error } = await getUser(token, router);
 
-      if (error) {
-        toast.error(error);
-        router.push("/login");
-        return;
-      }
+    const decodedToken = JSON.parse(atob(token.split(".")[1]));
+    const userId = decodedToken.sub;
 
-      setIsLoading(false);
+    const response = api({
+        url: `users/${userId}`,
+        method: 'GET',
+      })
     };
 
     fetchUser();
-    fetchProjects();
-  }, [router, token, fetchProjects]);
+    getProjects();
+  }, [router, token, getProjects]);
 
-  if (isLoading) {
-    return <Progress />;
-  }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex flex-row">
-        <div className="w-64 bg-white border-r">
-          <div className="flex items-center justify-center h-14 border-b">
-            <div className="text-black">PROJECT Z0NE</div>
-          </div>
-          <div className="flex flex-col py-4 space-y-1 mt-auto">
-            <li>Projects</li>
-            <li>Settings</li>
-            <li>Profile</li>
-          </div>
-
-          <Button
-            onClick={handleLogout}
-            className="w-full mt-auto bg-red-500 text-white"
-          >
-            Logoff
-          </Button>
+    <div className="flex flex-col min-h-screen bg-gray-50">
+    <div className="flex flex-row h-screen">
+      {/* Sidebar */}
+      <div className="w-64 bg-white border-r shadow-sm">
+        <div className="flex items-center justify-center h-16 border-b">
+          <div className="text-xl font-bold text-green-600">PROJECT Z0NE</div>
+        </div>
+        
+        <div className="flex flex-col p-4 space-y-2">
+          <button className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <span className="text-gray-700">Projects</span>
+          </button>
+          <button className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <span className="text-gray-700">Settings</span>
+          </button>
+          <button className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors">
+            <span className="text-gray-700">Profile</span>
+          </button>
         </div>
 
-        <div className="flex flex-col flex-grow">
-          <div className="flex w-full h-14 items-center bg-white border-b">
-            <div className="flex w-[80%] justify-center items-center">
-              <UserProfile token={token || ''}/>
-            </div>
-            <div className="flex w-[20%] items-center justify-center">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button>+ Novo Projeto</Button>
-                </PopoverTrigger>
-                <PopoverContent>               
-                    <CreateProjectForm onSubmit={onSubmitProject} />                  
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
+        <Button
+          onClick={handleLogout}
+          className="w-[90%] mx-auto mb-6 mt-auto bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors duration-200"
+        >
+          Sair
+        </Button>
+      </div>
 
-          <div className="flex flex-wrap justify-start gap-4 p-6 mt-4">
-            {projects.length > 0 ? (
-              projects.map((project) => (
-                <ProjectCard key={project.id} project={project} onDelete={removeProject}/>
-              ))
-            ) : (
-              <p>Nenhum projeto foi criado ainda.</p>
-            )}
+      {/* Main Content */}
+      <div className="flex flex-col flex-grow">
+        <div className="flex w-full h-16 items-center bg-white border-b px-6 shadow-sm">
+          <div className="flex w-[80%] justify-start items-center">
+            <UserProfile token={token || ''} />
           </div>
+          <div className="flex w-[20%] items-center justify-end">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition-colors duration-200">
+                  + Novo Projeto
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-96 p-4 rounded-lg shadow-lg">
+                <CreateProjectForm onSubmit={onSubmitProject} />
+              </PopoverContent>
+            </Popover>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap justify-start gap-6 p-8 mt-2 bg-gray-50">
+          {projects.length > 0 ? (
+            projects.map((project) => (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                onDelete={removeProject}
+              />
+            ))
+          ) : (
+            <div className="flex flex-col items-center justify-center w-full p-12">
+              <p className="text-gray-500 text-lg">
+                Nenhum projeto foi criado ainda.
+              </p>
+              <p className="text-gray-400 mt-2">
+                Clique em "Novo Projeto" para começar
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
+  </div>
   );
 }

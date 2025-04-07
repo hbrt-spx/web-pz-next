@@ -1,10 +1,10 @@
+import { api } from "../services/api";
+
 export const deleteProject = async (id: string): Promise<boolean> => {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects/${id}`, {
+    const response = await api({
+      url: `projects/${id}`,
       method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
 
     return response.ok;

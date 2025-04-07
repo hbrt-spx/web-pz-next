@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import { useTaskStore } from "../stores/taskStore";
+import { api } from "../services/api";
 
 export const deleteTask = async (taskId: string) => {
    
@@ -11,16 +12,11 @@ export const deleteTask = async (taskId: string) => {
         return;
       }
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/tasks/${taskId}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api({
+        url: `tasks/${taskId}`,
+        method: 'DELETE',
+        
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

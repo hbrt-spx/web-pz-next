@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { InputPass } from "../molecules/input-password";
 import { IFormRegister } from "../../types/forms";
 import FormBase from "./form-base";
+import { api } from "../../services/api";
 
 const schema = yup.object({
   name: yup
@@ -36,58 +37,39 @@ function FormRegister() {
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = async (data: IFormRegister) => {
+  async function ClickSubmit(data: IFormRegister) {
     const { confirm, ...userData } = data;
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-      if (response.ok) {
-        toast.success("Cadastro realizado com sucesso");
-        window.location.href = "/login";
-      } else {
-        const errorData = await response.json();
-        if (errorData.message === "Este e-mail já está registrado.") {
-          toast.error("Este e-mail já está registrado.");
-        } else {
-          toast.error("Erro ao fazer cadastro. Tente novamente.");
-        }
-      }
-    } catch (error) {
-      toast.error("Erro ao fazer cadastro. Tente novamente.");
-      console.error("Erro:", error);
-    }
-  };
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAaaa");
+    const response = await api({
+      url: "users",
+      method: "POST",
+      body: userData,
+      messageSuccess: "Cadastro realizado com sucesso.",
+      messageError: "Erro ao fazer cadastro.",
+    });
+    return response;
+  }
 
   return (
-    <FormBase onSubmit={onSubmit}>
-      <Input
-          name="name"
-          type="text"
-          placeholder='Nome completo'
-        />
-        <Input
-          name="email"
-          type="email"
-          placeholder="E-mail"
-        />
-        <InputPass
-          name="password"
-          type="password"
-          placeholder="Digite sua senha"
-        />
-        <InputPass
-          name="confirm"
-          type="password"
-          placeholder="Repita a sua senha"
-        />
-        <Button type="submit" className="w-full mt-2 font-bold">
-          Cadastrar
-        </Button>
+    <FormBase onSubmit={ClickSubmit}>
+      <Input name="name" type="text" placeholder="Nome completo" />
+      <Input name="email" type="email" placeholder="E-mail" />
+      <InputPass
+        name="password"
+        type="password"
+        placeholder="Digite sua senha"
+      />
+      <InputPass
+        name="confirm"
+        type="password"
+        placeholder="Repita a sua senha"
+      />
+      <Button
+        type="submit"
+        className="w-full mt-2 font-bold"
+      >
+        Cadastrar
+      </Button>
     </FormBase>
   );
 }

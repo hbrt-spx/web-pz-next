@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import Cookie from "js-cookie";
+import { api } from "../services/api";
 
 interface Project {
   id: string;
@@ -14,7 +15,7 @@ interface ProjectStore {
   addProject: (project: Project) => void;
   setProjects: (projects: Project[]) => void;
   removeProject: (projectId: string) => void;
-  fetchProjects: () => Promise<void>;
+  getProjects: () => Promise<void>;
 }
 
 export const useProjectStore = create<ProjectStore>((set) => ({
@@ -28,7 +29,7 @@ export const useProjectStore = create<ProjectStore>((set) => ({
     }));
   },
 
-  fetchProjects: async () => {
+  getProjects: async () => {
     const token = Cookie.get("token");
     if (!token) {
       console.error("Token não encontrado");
@@ -38,22 +39,17 @@ export const useProjectStore = create<ProjectStore>((set) => ({
     const userId = decodedToken.sub;
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/projects/user-projects/${userId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await api({
+        url: `projects/user-projects/${userId}`,
+        method: 'GET',
+      });
 
-      if (!response.ok) {
-        throw new Error(`Erro ao buscar projetos: ${response.statusText}`);
+      if (!response) {
+        console.log(" resposta do getProjects",response)
+        throw new Error(`Erro ao buscar projetos`);
       }
 
-      const data: Project[] = await response.json();
+      const data: Project[] = await response
       set({ projects: data });
     } catch (error) {
       console.error("Erro ao buscar projetos:", error);

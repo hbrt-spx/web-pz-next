@@ -5,7 +5,6 @@ import FormBase from "./form-base";
 import FormTask from "./form-task";
 import { useEffect, useState } from "react";
 import { onSubmitTask } from "../../utils/create-task";
-import { getTask } from "../../utils/get-task";
 import { useTaskStore } from "../../stores/taskStore";
 import { deleteTask } from "../../utils/delete-task";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../molecules/dialog";
@@ -23,13 +22,12 @@ interface ProjectCardProps {
 
 const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
   const [isDeleting, setIsDeleting] = useState(false);
-  const { tasks, addTask, clearTasks } = useTaskStore();
+  const { tasks, addTask, clearTasks, getTask } = useTaskStore();
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     getTask(project.id);
-    console.log("Esta rodando?");
-  }, [project.id]);
+      }, [project.id]);
 
   const handleDelete = async () => {
     if (isDeleting) return;
@@ -85,18 +83,16 @@ const ProjectCard = ({ project, onDelete }: ProjectCardProps) => {
       <h2 className="text-xl font-bold">{project.name}</h2>
       <p>{project.description}</p>
 
-      <Dialog>
-        <DialogTrigger>
-          <Button variant="outline" className="mt-2">
-            Ver Detalhes
-          </Button>      
-        </DialogTrigger>
-          <DialogTitle>
-          <h1>{project.name}</h1>
-          </DialogTitle>
-          <h2>{project.description}</h2>
+      <Dialog onOpenChange={handleOpenChange}>
+      <DialogTrigger asChild>
+        <Button variant="outline" className="mt-2">
+          Ver Detalhes
+        </Button>
+      </DialogTrigger>
         <DialogContent>
-            <h1>{project.name}</h1>
+          <DialogTitle>
+            {project.name}
+          </DialogTitle>
             <h2>{project.description}</h2>
             <div className="overflow-y-auto max-h-[250px]">
               <FormBase

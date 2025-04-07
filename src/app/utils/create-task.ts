@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
 import { IFormTask } from "../types/forms";
 import Cookie from "js-cookie";
+import { api } from "../services/api";
 
 export const onSubmitTask = async (data: IFormTask, projectId: string) => {
    
@@ -22,17 +23,11 @@ export const onSubmitTask = async (data: IFormTask, projectId: string) => {
         status: data.status || "Pendente"
       };
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/tasks`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify(taskData),
-        }
-      );
+      const response = await api({
+        url: 'tasks',
+        method: 'POST',
+        body: taskData
+      });
 
       if (!response.ok) {
         const errorData = await response.json();

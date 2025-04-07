@@ -1,5 +1,6 @@
 import Cookie from "js-cookie";
 import { toast } from "react-toastify";
+import { api } from "../services/api";
 
 export const createProject = async (data: { name: string; description: string; }) => {
   try {
@@ -18,13 +19,10 @@ export const createProject = async (data: { name: string; description: string; }
       userId: userId,
     };
 
-    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/projects`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(projectData),
+    const response = await api({
+      url: 'projects',
+      method: 'POST',
+      body: projectData
     });
 
     if (!response.ok) {

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useUserStore } from "../../stores/userStore";
 import { Progress } from "../atoms/progress";
 import Cookie from "js-cookie";
+import { api } from "../../services/api";
 
 interface UserProfileProps {
   token: string;
@@ -26,22 +27,16 @@ const UserProfile = ({ token }: UserProfileProps) => {
 
       const userId = decodedToken.sub;
       try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/users/${userId}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const response = await api({
+          url: `users/${userId}`,
+          method: 'GET'
+        });
 
-        if (!response.ok) {
+        if (!response) {
           throw new Error("Token expirado ou inválido");
         }       
 
-        const userDetailsData = await response.json();
+        const userDetailsData = await response;
         setUserDetails(userDetailsData);
         setLoading(false);
       } catch (error: any) {
