@@ -11,7 +11,7 @@ import CreateProjectForm from "../components/organisms/create-project-form";
 import ProjectCard from "../components/organisms/project-card";
 import UserProfile from "../components/organisms/user-profile";
 import { Popover, PopoverContent, PopoverTrigger } from "../components/molecules/popover";
-import { createProject } from "../utils/create-projects";
+import { createProject } from "../services/create-projects";
 import { api } from "../services/api";
 import InvitationButton from "../components/molecules/invitation-button";
 import { useInvitationStore } from "../stores/invitationStore";
@@ -46,16 +46,13 @@ export default function Dashboard() {
       const decodedToken = JSON.parse(atob(token.split(".")[1]));
       const userId = decodedToken.sub;
 
-      // Buscar o usuário
       await api({
         url: `users/${userId}`,
         method: "GET",
       });
 
-      // Carregar os projetos do usuário
       getProjects();
 
-      // Carregar os convites do usuário
       try {
         const invitations = await getInvitations();
         setInvitations(invitations);

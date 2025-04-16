@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 interface Invitation {
+  project: any;
   id: string;
   inviterName: string;
   name: string;

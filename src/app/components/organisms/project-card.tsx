@@ -1,12 +1,12 @@
 import { toast } from "react-toastify";
-import { deleteProject } from "../../utils/delete-project";
+import { deleteProject } from "../../services/delete-project";
 import { Button } from "../atoms/button";
 import FormBase from "./form-base";
 import FormTask from "./form-task";
 import { useEffect, useState } from "react";
-import { onSubmitTask } from "../../utils/create-task";
+import { onSubmitTask } from "../../services/create-task";
 import { useTaskStore } from "../../stores/taskStore";
-import { deleteTask } from "../../utils/delete-task";
+import { deleteTask } from "../../services/delete-task";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../molecules/dialog";
 
 interface Project {

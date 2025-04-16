@@ -40,7 +40,7 @@ export const useProjectStore = create<ProjectStore>((set) => ({
 
     try {
       const response = await api({
-        url: `projects/user-projects/${userId}`,
+        url: `projects/my-projects/${userId}`,
         method: 'GET',
       });
 
