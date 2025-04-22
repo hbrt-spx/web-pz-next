@@ -1,69 +1,80 @@
-'use client';
+'use client'
 import { useEffect, useState } from 'react';
 import { fetchInvitations, acceptInvitation, declineInvitation } from '../../services/invitation-service';
 import { useInvitationStore } from '../../stores/invitationStore';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import { toast } from 'react-toastify';
-import Cookie from "js-cookie";
+import Cookie from 'js-cookie';
+import { io } from 'socket.io-client';
+import { Invitation } from '../../types/invitation';
 
-interface Invitation {
-  id: string;
-  status: string;
-  invited_at: string;
-  accepted_at: string | null;
-  declined_at: string | null;
-  project: {
-    id: string;
-    name: string;
-    description: string;
-    createdAt: string;
-    updatedAt: string;
-  };
-}
 
+const socket = io(process.env.NEXT_PUBLIC_API_URL, {
+  auth: {
+    token: Cookie.get('token') 
+  }
+});
 
 export default function InvitationButton() {
-  const { invitations, setInvitations, removeInvitation } = useInvitationStore();
+  const { invitations = [], setInvitations, removeInvitation } = useInvitationStore(); 
   const [isOpen, setIsOpen] = useState(false);
 
-  const token = Cookie.get("token");
-  if (!token) {
-    toast.error("Token não encontrado");
-    return;
-  }
-
-  const decodedToken = JSON.parse(atob(token.split(".")[1]));
-  const userId = decodedToken.sub; 
 
   useEffect(() => {
-    const loadInvitations = async (userId: string) => {
+
+    const token = Cookie.get("token");
+
+    if (!token) {
+      toast.error("Token não encontrado ou inválido.");
+      return;
+    }
+
+    const loadInvitations = async () => {
       try {
-        const data = await fetchInvitations(userId);
-        setInvitations(data);
+        const data = await fetchInvitations(token); 
+        setInvitations(data); 
       } catch (err) {
         console.error('Erro ao buscar convites:', err);
       }
     };
-    loadInvitations(userId);
+
+    loadInvitations();
+
+
+    socket.on('newInvitation', (invitation: Invitation) => {
+      setInvitations((prevInvitations: Invitation[]) => {
+        return [...prevInvitations, invitation];
+      });
+    });
+
+    return () => {
+      socket.off('newInvitation');
+    };
   }, [setInvitations]);
 
   const handleAccept = async (id: string) => {
-    await acceptInvitation(id);
-    removeInvitation(id);
+    try {
+      await acceptInvitation(id);
+      removeInvitation(id);
+    } catch (error) {
+      toast.error("Erro ao aceitar o convite.");
+    }
   };
 
   const handleDecline = async (id: string) => {
-    await declineInvitation(id);
-    removeInvitation(id);
+    try {
+      await declineInvitation(id);
+      removeInvitation(id);
+    } catch (error) {
+      toast.error("Erro ao recusar o convite.");
+    }
   };
 
   return (
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`flex items-center gap-2 px-4 py-2 rounded-md text-white ${
-          invitations.length > 0 ? 'bg-blue-600' : 'bg-gray-700'
-        }`}
+        className={`flex items-center gap-2 px-4 py-2 rounded-md text-white ${invitations.length > 0 ? 'bg-blue-600' : 'bg-gray-700'}`}
       >
         Convites
         {invitations.length > 0 && (

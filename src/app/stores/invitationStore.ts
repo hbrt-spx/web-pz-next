@@ -1,25 +1,22 @@
 import { create } from 'zustand';
-
-interface Invitation {
-  project: any;
-  id: string;
-  inviterName: string;
-  name: string;
-}
+import { Invitation } from '../types/invitation';
 
 interface InvitationStore {
   invitations: Invitation[];
-  setInvitations: (invites: Invitation[]) => void;
+  setInvitations: (invites: Invitation[] | ((prev: Invitation[]) => Invitation[])) => void;
   removeInvitation: (id: string) => void;
-  getInvitations: () => Invitation[]; // Getter para acessar as invitations
+  getInvitations: () => Invitation[];
 }
 
 export const useInvitationStore = create<InvitationStore>((set, get) => ({
   invitations: [],
-  setInvitations: (invites) => set({ invitations: invites }),
+  setInvitations: (invites) =>
+    set((state) => ({
+      invitations: typeof invites === 'function' ? invites(state.invitations) : invites,
+    })),
   removeInvitation: (id) =>
     set((state) => ({
       invitations: state.invitations.filter((inv) => inv.id !== id),
     })),
-  getInvitations: () => get().invitations, // Getter para retornar o estado atual de invitations
+  getInvitations: () => get().invitations,
 }));

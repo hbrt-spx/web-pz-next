@@ -7,6 +7,7 @@ interface RequestProps {
   url: string,
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
   body?: object,
+  headers?: Record<string, string>;
   params?: object,
   messageError?: string
   messageSuccess?: string

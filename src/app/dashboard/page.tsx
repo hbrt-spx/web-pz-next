@@ -37,32 +37,39 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    if (!token) {
-      router.push("/login");
-      return;
-    }
+  if (!token) {
+    router.push("/login");
+    return;
+  }
 
-    const fetchUser = async () => {
-      const decodedToken = JSON.parse(atob(token.split(".")[1]));
-      const userId = decodedToken.sub;
-
-      await api({
-        url: `users/${userId}`,
+  const fetchUser = async () => {
+    try {
+      const response = await api({
+        url: "/auth/get-user",
         method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
 
-      getProjects();
+      const user = response.data;
 
-      try {
-        const invitations = await getInvitations();
-        setInvitations(invitations);
-      } catch (err) {
-        console.error("Erro ao buscar convites:", err);
-      }
-    };
+      await getProjects();
 
-    fetchUser();
-  }, [router, token, getProjects, getInvitations, setInvitations]);
+      const invitations = await getInvitations();
+      setInvitations(invitations);
+
+    } catch (err) {
+      console.error("Erro ao buscar usuário:", err);
+      toast.error("Sessão expirada. Faça login novamente.");
+      Cookie.remove("token");
+      router.push("/login");
+    }
+  };
+
+  fetchUser();
+}, [router, token, getProjects, getInvitations, setInvitations]);
+
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
